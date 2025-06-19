@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     allowed_origins: List[str] = ["http://localhost:3001", "http://127.0.0.1:3001"]
     
     # Upload settings
-    max_upload_size: int = 10485760  # 10MB
+    max_upload_size: int = 504857600  # 10MB
     upload_dir: str = "uploads/"
     
     class Config:

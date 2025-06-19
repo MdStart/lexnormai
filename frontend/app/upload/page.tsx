@@ -26,7 +26,7 @@ export default function UploadPage() {
   const [previewContent, setPreviewContent] = useState('');
 
   const handleFileSelect = async (file: File) => {
-    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+    if (file.size > 504857600) { // 10MB limit
       setUploadError('File size must be less than 10MB');
       return;
     }

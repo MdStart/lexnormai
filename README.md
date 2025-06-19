@@ -66,10 +66,32 @@ cp env.example .env
 
 ### 3. Database Setup
 
+You can set up the database using one of these methods:
+
+#### Option A: Using SQL Script (Direct)
+```bash
+# Create database and tables using SQL script
+psql -U your_username -h localhost -f scripts/create_tables.sql
+
+# Or if you need to create the database first:
+createdb lexnormai_db
+psql -U your_username -d lexnormai_db -f scripts/create_tables.sql
+```
+
+#### Option B: Using Python Script (Recommended)
+```bash
+# Create database and tables using Python script
+python scripts/create_database.py
+```
+
+#### Option C: Using Alembic Migrations
 ```bash
 # Run database migrations
 alembic upgrade head
+```
 
+#### Import Sample Data
+```bash
 # Import sample occupational standards
 python scripts/import_standards.py
 ```
@@ -162,6 +184,12 @@ NEXT_PUBLIC_APP_VERSION=1.0.0
 - **course_content**: Stores uploaded course materials and AI-generated summaries
 - **lex_norm_standard**: Contains occupational standards library (imported from CSV)
 - **lexnorm_settings**: Configuration settings for AI mapping preferences
+
+### Database Scripts
+
+- `scripts/create_tables.sql`: SQL script to create all required tables
+- `scripts/create_database.py`: Python script to create database and tables automatically
+- `scripts/import_standards.py`: Script to import occupational standards from CSV
 
 ## 🧪 API Documentation
 
