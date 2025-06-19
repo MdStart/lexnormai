@@ -1,0 +1,67 @@
+we are building a new product to create a system with AI to tag any given course content with the most relevant occupation or labour code standards by country using LLM.
+
+Frontend:
+- NextJS
+- Shadcn UI
+- Tailwind CSS
+- TypeScript
+
+Backend:
+- FastAPI
+- Python
+- Gemini Google
+- Postgres database
+
+
+General Code logic:
+- We will use the Gemini Google API to tag the course content with the most relevant occupation or labour code standards by country.
+- We will use the Postgres database to store the course content and the tagged data.
+- We will use the FastAPI to create the API.
+- We will use the NextJS to create the frontend.
+- We will use the Shadcn UI to create the frontend.
+- We will use the Tailwind CSS to create the frontend.
+
+
+Features Requirements in order of priority:
+- We need to create a frontend settings form with backend api where user can select the country and default to India
+- We need to create a frontend settings form with backend api where user can select the occupation or labour code standards and default to "NOS-National Occupational Standard"
+- We need to create a frontend form with backend api where user can upload the course content.
+- We need to create a frontend with backend api to run the mapping i.e. the course content will be mapped to right standards
+
+Logic explanation on how the course content will be mapped to right standards:
+- The course content may be large in number of text pages or pdf pages and llm should be able to create a summary for the all the contents in the course content and store it in the database.
+- The summary will be used to map the course content to right standards using llm using the occupation or labour code standards library database
+
+
+table schemas:
+- course_content table:
+  - id
+  - title
+  - content
+  - summary
+  - created_at
+  - updated_at
+
+- lex_norm_standard table: to be same as /data/course_mapping_library.csv and note we need a sql script to map api this csv data into this table
+make columns from these csv columns - Job Role,NOS Code,NOS Name,PC code,PC Description
+  - id
+  - job_role
+  - nos_code
+  - nos_name
+  - pc_code
+  - pc_description
+  - created_at
+  - updated_at
+
+- lexnorm_settings table:
+  - id
+  - task_type -> choices to "content_summary" or "content_mapping" where content_summary is to create a summary for the all the contents in the course content and content_mapping is to map the course content to right standards
+  - country -> default to "India"
+  - lexnorm_standard -> default to "NOS-National Occupational Standard"
+  - llm_model -> default to "gemini-2.5-pro"
+  - llm_prompt -> default to ""
+  - created_at
+  - updated_at
+
+Note - llm_model api key to be stored in the .env file 
+

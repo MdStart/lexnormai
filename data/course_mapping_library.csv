@@ -1,0 +1,467 @@
+Job Role,NOS Code,NOS Name,PC code,PC Description
+"Data Quality Analyst,Business Intelligence Analyst,Data Scientist",SSC/N8101,Import data as per specifications,PC1.,identify the objective of the analysis
+,,,PC2.,define the type of data to be imported
+,,,PC3.,define the volume of data to be imported
+,,,PC4.,define the key variables to be imported
+,,,PC5.,identify suitable sources for the data
+,,,PC6.,perform operations to acquire the data and store it in datasets or data frames
+,,,PC7.,populate metadata for the imported data
+,,,PC8.,validate imported data using appropriate tools & processes
+,,,PC9.,"validate the desired output with the relevant stakeholders within the organization, if required"
+"Data Quality Analyst,Business Intelligence Analyst,Data Scientist",SSC/N8102,Preprocess data as per specifications,PC1.,define the format and structure for the dataset
+,,,PC2.,define indexes and organize variables as per the defined format
+,,,PC3.,identify data types for each variable of the dataset
+,,,PC4.,identify and fix missing values in each variable of the dataset
+,,,PC5.,identify and fix incorrect data types in each variable of the dataset
+,,,PC6.,sort the data and create subsets of the data as required
+,,,PC7.,perform operations to transform data types of variables as required
+,,,PC8.,identify and deal with data redundancy by normalizing the dataset
+,,,PC9.,validate preprocessed data using appropriate tools and processes
+"Business Intelligence Analyst,Data Scientist",SSC/N8103,Perform exploratory data analysis as per specifications,PC1.,identify the data types for each variable of the dataset
+,,,PC2.,identify the key variables required for modelling or analysis
+,,,PC3.,use statistical techniques to summarize the key variables in the dataset
+,,,PC4.,describe summary statistics for key variables using graphical formats
+,,,PC5.,"perform dimension reduction to optimize the variables in the dataset, if required"
+,,,PC6.,define the correlation factors using clustering and other techniques
+,,,PC7.,validate data using appropriate tools and processes
+,,,PC8.,repeat the analysis iteratively to arrive at optimal results
+,,,PC9.,validate the final output in consultation with the relevant stakeholders
+,,,PC10.,gain inferences from the final output of the data analysis
+,,,PC11.,develop a hypothesis model to explain the discovered inferences
+,,,PC12.,evaluate the results of the analysis and define business outcomes
+,,,PC13.,define prescriptive actions based on the defined business outcomes
+Data Scientist,SSC/N8104,Perform research and design of algorithmic models,PC1.,identify the objective of the analysis
+,,,PC2.,develop a hypothesis based on the objective of the analysis
+,,,PC3.,"identify suitable libraries, packages, frameworks, applications to address the objective"
+,,,PC4.,"identify mode of learning, i.e. supervised or unsupervised"
+,,,PC5.,conduct research on existing statistical models to evaluate fitment with the objective
+,,,PC6.,"depending on the use case, identify if neural networks or deep learning models can be built"
+,,,PC7.,optimize the existing statistical models as per need
+,,,PC8.,identify suitable statistical models on the basis of data volumes and key variables
+,,,PC9.,define connectors or combinations of key variables for each statistical model
+,,,PC10.,determine and collect the training data
+,,,PC11.,design and prototype algorithmic model
+,,,PC12.,identify and resolve overfitting or underfitting of algorithmic model
+,,,PC13.,identify and resolve residual and dispersion errors with data
+,,,PC14.,define data flows such as human-in-the-loop constraints required to reinforce algorithmic models
+,,,PC15.,define and quantify success metrics for the algorithmic model
+,,,PC16.,create documentation on designed algorithmic models for future references and versioning
+,,,PC17.,retrain datasets that have been used for supervised learning on a continuous basis
+,,,PC18.,validate designed models using appropriate tools and processes
+,,,PC19.,Iterate the process to fine-tune the model til the desired quality of output or performance is achieved
+Data Scientist,SSC/N8105,Apply pre-designed algorithmic models to specified use cases,PC1.,identify the objective of the analysis
+,,,PC2.,evaluate the dataset to determine a suitable approach
+,,,PC3.,"identify suitable libraries, packages, frameworks, applications to address the objective"
+,,,PC4.,"select suitable algorithmic models from available statistical analysis softwares, packages, libraries or tools"
+,,,PC5.,"apply the model for various use cases and scenarios such as vision, text recognition, image recognition, natual language processing etc."
+,,,PC6.,optimize selected algorithmic models to resolve any shortcomings or defects
+,,,PC7.,iterate the model in consultation with relevant stakeholders till the desired performance or quality of output is achieved
+,,,PC8.,validate the models implemented using approporiate tools and processes
+,,,PC9.,create documentation on applied algorithmic models for future references and versioning
+Data Scientist,SSC/N8106,Evaluate risk of deploying algorithmic models,PC1.,define the purpose and metrics for the algorithmic model
+,,,PC2.,define data sources used to design the model and data flows used to reinforce the model
+,,,PC3.,define and evaluate the assumptions used while designing the algorithmic model
+,,,PC4.,evaluate the range of expected outcomes of the algorithmic model
+,,,PC5.,test the model with different inputs and identify the factors that are creating a deviation from the expected outcomes
+,,,PC6.,estimate the risks involved in case the algorithmic model deviates from the expected outcomes
+,,,PC7.,introduce checks and mitigation measures for each of the potential risks resulting from the model
+,,,PC8.,create documentation on potential risks and the associated mitigation measures
+,,,PC9.,validate risks and mitigation measures with appropriate stakeholders
+,,,PC10.,recommend and implement corrective actions to the model as required
+,,,PC11.,evaluate the model for all possible use cases / scenarios
+Data Scientist,SSC/N8107,Evaluate business performance of algorithmic models,PC1.,identify the objective being addressed by the model
+,,,PC2.,define suitable evaluation criteria and metrics to evaluate model performance as per objective
+,,,PC3.,evaluate the performance of the algorithmic models
+,,,PC4.,identify the hyperparameters to maximize model performance
+,,,PC5.,test different hyperparameter configurations
+,,,PC6.,use best-fit hyperparameter configurations to maximize model performance
+"Business Intelligence Analyst,Data Scientist",SSC/N8108,Define business outcomes and create visualizations from results of the analysis,PC1.,identify the objective of the analysis
+,,,PC2.,"establish the purpose, scope, and target audience to report the business outcomes"
+,,,PC3.,"define the delivery mode and format (such as excel sheets, reports, APIs) to report the business outcomes"
+,,,PC4.,summarize the defined business outcomes into a narrative
+,,,PC5.,select suitable visualizations to represent the defined business outcomes
+,,,PC6.,present outcomes through selected visualizations using standard templates and agreed language standards
+,,,PC7.,validate visualizations with appropriate people
+,,,PC8.,publish visualizations for consumption across all agreed formats
+Data Architect,SSC/N8109,Design new data architectures as per specifications,PC1.,define the technical and business requirements for the data architecture
+,,,PC2.,"review the capabilities, strengths, and limitations of various data architectures"
+,,,PC3.,formulate strategies and methodologies and identify the best technologies to implement various architectures
+,,,PC4.,define storage design considerations with relevant business and technical stakeholders
+,,,PC5.,"evaluate changes in cross-border data governance issues, PII (Personally Identifiable Information) regulations, GDPR (General Data Protection Regulations), global-scale, security, and monitoring"
+,,,PC6.,define security standards in alignment with existing governance standards
+,,,PC7.,"analyse common data patterns for transactional systems, time series, and hybrid data solutions"
+,,,PC8.,design architecture that uses data from various sources
+,,,PC9.,stage the data for processing
+,,,PC10.,"define approaches to load data. i.e., either batch-driven or event-driven"
+,,,PC11.,determine the right data format depending on whether the application is batch or real-time driven
+,,,PC12.,define data segmentations as per requirements
+,,,PC13.,define reliable and scalable data pipelines or integrations
+,,,PC14.,evaluate the potential evolution of the data technology stack
+,,,PC15.,create documentation on designed data architectures for appropriate people
+,,,PC16.,validate data architecture with appropriate people
+,,,PC17.,monitor data architecture performance and recommend suitable improvements
+,,,PC18.,troubleshoot and resolve issues with new data architectures
+Data Architect,SSC/N8110,Maintain existing data architectures,PC1.,"review existing data architectures based on business and technology requirements, performance and scalability"
+,,,PC2.,optimize existing data architectures and recommend efficiencies to data storage and retrieval
+,,,PC3.,optimize existing data architectures and recommend efficiencies to data processing
+,,,PC4.,monitor changes in governance standards and update architectures
+,,,PC5.,update documentation on designed data architectures for appropriate people
+Data Architect,SSC/N8111,Implement data storage network solutions,PC1.,evaluate storage design considerations for the data architecture
+,,,PC2.,"describe assessment goals, objectives and methodology of storage networks"
+,,,PC3.,setup the storage network for the desired architecture
+,,,PC4.,create documentation on storage networks for appropriate people
+,,,PC5.,validate storage networks with appropriate people
+,,,PC6.,monitor system storage performance and recommend suitable improvements
+,,,PC7.,perform regular port and throughput exercises
+,,,PC8.,resolve data storage network issues
+Data Engineer,SSC/N8112,Develop data integrations as per specifications,PC1.,evaluate whether the application is batch or real-time driven
+,,,PC2.,evaluate whether the application is using an SQL or NoSQL database
+,,,PC3.,evaluate feasibility and level of effort to integrate the required data
+,,,PC4.,"evaluate different data warehouse, lake or pipeline designs"
+,,,PC5.,evaluate available hardware if an on-premise solution is being designed
+,,,PC6.,determine the right data format depending on the nature of the application (for eg. batch or real-time driven)
+,,,PC7.,partition or size the data as appropriate
+,,,PC8.,transform data into other formats
+,,,PC9.,"develop, test and troubleshoot data pipelines"
+,,,PC10.,combine tools into either macro or micro data pipelines
+,,,PC11.,design and implement ETL (Extract-Transform-Load) processes
+,,,PC12.,use data integration processes to populate and refresh the data warehouse
+,,,PC13.,define data onboarding and transformation processes to design the data lake
+,,,PC14.,create and execute proof-of-concepts for demonstrating the viability of the design approach for the data lake
+,,,PC15.,select appropriate applications to design and scale the data lake as per requirements
+,,,PC16.,develop the data lake and define appropriate mechanisms to query the data lake
+,,,PC17.,"load data, metadata and other required categories into the data lake"
+,,,PC18.,"develop mechanisms for error and fault handling, and system availability for the data lake"
+,,,PC19.,define performance criteria for the data integrations such as response time
+,,,PC20.,optimize the data integrations on the basis of the defined performance criteria
+,,,PC21.,create documentation on developed data integrations for appropriate people
+,,,PC22.,validate data integrations with appropriate people
+Solution Architect,SSC/N8113,Design new solution architectures as per specifications,PC1.,identify business requirements
+,,,PC2.,evaluate the platform on which the solution is to be built
+,,,PC3.,"evaluate changes in cross-border data governance issues, PII (Personally Identifiable Information) regulations, GDPR (General Data Protection Regulations), global-scale, security, and monitoring"
+,,,PC4.,"select appropriate design standards, methods and tools"
+,,,PC5.,define system level architecture for the solution
+,,,PC6.,"design data feeds, data quality checks and components needed to configure the solution"
+,,,PC7.,define detailed component specifications
+,,,PC8.,translate component specifications into detailed designs for implementation
+,,,PC9.,undertake impact analysis on major design options
+,,,PC10.,develop technical capabilities roadmap for new solution architectures
+,,,PC11.,create documentation on designed solution architectures for appropriate people
+,,,PC12.,validate solution architectures with appropriate people
+,,,PC13.,identify data quality metrics and guide processes that track and measure data quality continually
+,,,PC14.,troubleshoot and resolve issues with new solution architectures
+,,,PC15.,"identify potential risks, and define mitigation plans and processes for appropriate people"
+Solution Architect,SSC/N8114,Maintain existing architectures for solutions,PC1.,"review existing system architecture designs to ensure balance of functional, service quality, and systems management requirements"
+,,,PC2.,"review existing system architecture designs to ensure selection of appropriate technology, efficient use of resources, and integration of multiple systems"
+,,,PC3.,review technical capabilities roadmap for existing solution architectures
+,,,PC4.,monitor changes in solution design standards and update architecture
+,,,PC5.,update documentation on existing solution architectures for appropriate people
+Database Administrator,SSC/N8115,Create new databases,PC1.,identify the objectives to be addressed
+,,,PC2.,identify suitable data sources
+,,,PC3.,specify the storage requirements such as space and create a new database
+,,,PC4.,"import data from the identified sources (logs, files, different databases) into the database"
+,,,PC5.,create documentation on new databases for appropriate people
+,,,PC6.,validate databases with appropriate people
+Database Administrator,SSC/N8116,Maintain existing databases,PC1.,update and delete information from existing databases
+,,,PC2.,assist in the migration of existing databases to new environments
+,,,PC3.,update documentation on existing databases for appropriate people
+,,,PC4.,implement automated database maintenance plans and backup routines
+,,,PC5.,"perform manual and scheduled maintenance procedures for backup, optimization, and indexing"
+,,,PC6.,troubleshoot and resolve issues with database completeness and veracity
+Database Administrator,SSC/N8117,Manage database access and configuration,PC1.,define and test user access rules for databases
+,,,PC2.,define encryption standards for the database
+,,,PC3.,perform load / stress testing to ensure the database does not crash in a DDoS (Distributed Denial of Service) attack
+,,,PC4.,ensure access to specific data and form of the data and provide deployment support to appropriate people using the databases
+,,,PC5.,monitor ongoing and forecasted workloads and determine consumption of data storage and compute resources
+,,,PC6.,"monitor logs, server usage, and performance metrics to ensure functionality and accessibility"
+,,,PC7.,"develop reports on database utilization, availability and performance metrics for relevant stakeholders"
+,,,PC8.,"troubleshoot database utilization, availability and performance issues and remediate known impacting vulnerabilities"
+,,,PC9.,oversee the availability and disaster recovery strategy for the database environment
+Database Administrator,SSC/N8118,Manage computing cluster administration,PC1.,define the size of the cluster based on data to be stored
+,,,PC2.,identify quicker ways to add or remove nodes using cluster monitoring tools
+,,,PC3.,deploy and manage clusters
+,,,PC4.,"setup cluster configurations using cookbooks, etc."
+,,,PC5.,define encryption standards at rest and in motion for data stored on the cluster
+,,,PC6.,create documentation on computing clusters
+,,,PC7.,validate computing clusters with appropriate people
+,,,PC8.,administer cluster access for appropriate people
+,,,PC9.,evaluate cluster requirement estimates through capacity planning
+,,,PC10.,monitor cluster connectivity and performance and recommend efficiencies
+,,,PC11.,troubleshoot issues with cluster connectivity and performance with appropriate people
+Data Architect,SSC/N8119,Define data governance processes and structures,PC1.,"define the sources of all the data points, including real-time data points, and the quality of the incoming data"
+,,,PC2.,"identify data assets found internally in the organization, and the external data ecosystem"
+,,,PC3.,define the lifecycle for each data asset present in the organization
+,,,PC4.,"evaluate the quality, completeness and timeliness of stored data and ensure that it meets the current needs"
+,,,PC5.,devise strategies to store and manage data as per regulations of the government and the organization
+,,,PC6.,monitor changes or issues with cross-border data governance regulations such as GDPR
+,,,PC7.,engage with various relevant stakeholders regarding the management of data
+,,,PC8.,define the strategy for data utilization
+,,,PC9.,develop and communicate standards for data utilization
+,,,PC10.,develop mechanisms to communicate best practices and reusability of data assets such as algorithms
+,,,PC11.,define governance models and processes
+,,,PC12.,"define processes for collecting and documenting metadata, and other data documentation processes"
+,,,PC13.,create documentation on data governance processes and structures for appropriate people
+,,,PC14.,validate data governance processes with appropriate people
+DevOps Engineer,SSC/N8120,"Develop tools, processes and mechanisms for continuous integration and delivery",PC1.,define continuous delivery and integration strategies
+,,,PC2.,design and develop staging environments before production
+,,,PC3.,"deploy, automate and maintain production systems"
+,,,PC4.,evaluate new technology options and vendor products
+,,,PC5.,"handle build, release and configuration management of production systems"
+,,,PC6.,manage and provision computer data centers through machine-readable definition files
+,,,PC7.,define and execute continuous testing and automated QA processes
+,,,PC8.,troubleshoot and solve system issues across platform and application domains
+,,,PC9.,"ensure availability, performance and scalability of production systems"
+Machine Learning Engineer,SSC/N8121,Evaluate technical performance of algorithmic models,PC1.,define technical specifications and limitations of the system running the algorithmic model
+,,,PC2.,define the data flows and evaluate the data structures in the algorithmic model
+,,,PC3.,"evaluate the speed, runtime and memory interdependencies of the algorithmic model"
+,,,PC4.,evaluate the parallel programming constraints of the system
+,,,PC5.,"modify and test the algorithmic model to fit speed, runtime and memory limitations of the system"
+,,,PC6.,update documentation on the algorithmic model
+,,,PC7.,provide feedback on model performance to the team responsible for designing and developing the model
+Machine Learning Engineer,SSC/N8122,Develop software code to support deployment of algorithmic models,PC1.,define technical specifications and limitations of the autonomous system
+,,,PC2.,evaluate the design of data flows and structures in the autonomous system
+,,,PC3.,evaluate the design of core algorithmic models in the autonomous system
+,,,PC4.,evaluate the parallel programming constraints of the autonomous system
+,,,PC5.,"integrate technical specifications, data flows, core algorithmic models and parallel programming constraints and convert them into reusable code"
+,,,PC6.,create documentation on developed software code for relevant stakeholders
+,,,PC7.,validate developed code with relevant stakeholders
+,,,PC8.,create and execute unit test cases to analyse the performance of the code
+,,,PC9.,evaluate the defects in the code and identify corrective actions
+,,,PC10.,implement corrective actions to optimize code performance
+,,,PC11.,submit tested and optimized code for approval by appropriate people
+NOS Archieved,SSC/N8123,Design chipsets to support development of autonomous systems,PC1.,define physical design requirements and constraints
+,,,PC2.,identify and resolve issues with physical design requirements or constraints
+,,,PC3.,evaluate the design constraints for compute clusters and workflows on the chipset
+,,,PC4.,"access reusable components, relevant best practices and design standards from your organization’s knowledge base"
+,,,PC5.,"use standard tools to simulate, analyze and synthesize design options for chipsets"
+,,,PC6.,integrate physical design requirements with the design constraints for compute clusters and workflows
+,,,PC7.,select design options that comply with the integrated requirements
+,,,PC8.,create documentation on the chipset designs for relevant stakeholders
+,,,PC9.,validate chipset designs with relevant stakeholders
+NOS Archieved,SSC/N8124,Integrate hardware and software systems,PC1.,define functional requirements of the autonomous system
+,,,PC2.,define the components of the autonomous system
+,,,PC3.,evaluate the design constraints for hardware and software components
+,,,PC4.,"access reusable components, relevant best practices and design standards from your organization’s knowledge base"
+,,,PC5.,design and assemble electromechanical components for the autonomous system
+,,,PC6.,design prototypes of base hardware components
+,,,PC7.,develop software code to integrate hardware components such as sensors
+,,,PC8.,"develop safety critical functions related to fault handling, state management and system redundancy"
+,,,PC9.,create documentation on the system integrations for relevant stakeholders
+,,,PC10.,validate developed code and options with relevant stakeholders
+NOS Archieved,SSC/N8125,Develop tests or simulations for end-to-end QA of systems,PC1.,define functional requirements of the autonomous system
+,,,PC2.,"define the type of testing and testing requirements such as unit, sub-system, system etc"
+,,,PC3.,identify any issues with the requirements for testing and clarify these with appropriate people
+,,,PC4.,"access reusable scenarios, test cases, scripts and tools from your organization’s knowledge base"
+,,,PC5.,create or modify test scenarios relevant to the requirements
+,,,PC6.,create or modify software test cases relevant to the requirements
+,,,PC7.,create or modify hardware test cases relevant to the requirements
+,,,PC8.,identify test cases that can be automated feasibly
+,,,PC9.,create or modify automated scripts relevant to the requirements
+,,,PC10.,access or create test data relevant to the requirements
+,,,PC11.,create a test plan to cover all the requirements
+,,,PC12.,run the simulated test cases and evaluate the outcomes
+,,,PC13.,communicate the outcomes of the tests or simulations with appropriate people and iterate
+,,,PC14.,create documentation on the tests or simulations for appropriate people
+,,,PC15.,"validate the test plan, test cases and/or automated scripts with appropriate people"
+NOS Archieved,SSC/N8126,"define data assets, define data strategy, communicate data strategy",PC1.,evaluate current and future business and IT requirements
+,,,PC2.,evaluate data assets found internally in the organization and the external data ecosystem
+,,,PC3.,define a strategy to leverage data to unify business and IT requirements for an appropriate duration
+,,,PC4.,"define a governance model including compliance, change management procedures, workflow guidance and key organizational structures"
+,,,PC5.,"define standards and processes for data management, metadata management and data stewardship"
+,,,PC6.,define stage-gated success metrics for the data strategy
+,,,PC7.,create documentation on the data strategy
+,,,PC8.,communicate the vision and strategic principles to appropriate people
+,,,PC9.,work with different teams to drive outcomes based on the defined data strategy
+Business Intelligence Analyst,SSC/N8127,Collect and define business requirements by interacting with clients,PC1.,assess the current business of the client
+,,,PC2.,understand technical capabilities of the client
+,,,PC3.,conduct business contextual discussions with the client
+,,,PC4.,evaluate and define the requirements of the client
+,,,PC5.,map the requirements to the capabilities of the team or organization responsible for delivering on them
+,,,PC6.,create documentation on the requirements
+,,,PC7.,"validate requirements with appropriate stakeholders, both internal and external to the organization"
+Data Annotator,SSC/N8135,"Identify, tag, and label distinct elements in huge datasets",PC1,Interact with data science and engineering teams to contribute to overall project development
+,,,PC2,Evaluate business contexts and identify the true definition of the data being annotated for specific use cases
+,,,PC3,"Identify the primary types of already determined data, relevant to the project (text, audio, image, and video)"
+,,,PC4,Search for data sources and data sets according to a defined keyword
+,,,PC5,Garner the pre-processed data after data cleaning and profiling from the data science team
+,,,PC6,"Identify data sensitivites (PHI, PII etc.) for masked and encrypted data"
+,,,PC7,"Classify the different data elements as sentiments, semantics, intent and named-entities"
+,,,PC8,"Recognize relevant annotation methods based on the data types, elements, ML algorithms being used, the business case and its expected outcomes"
+,,,PC9,"Identify and analyse the domain vocabulary, language, format and category of data intended to be used"
+,,,PC10,Label the data accordingly as per the type of annotation and output required
+,,,PC11,Ensure proper organization and formatting of the training data
+Data Annotator,SSC/N8136,Carry-out effective validation activities and tests on annotated data for better accuracy,PC1,Employ and follow pre-defined methods to ensure accuracy of annotation models and techniques
+,,,PC2,Review the annotated data and conduct periodic validations adhering to all the required standards
+,,,PC3,Apply or execute cross-checking mechanisms to ensure wrongful labelling is not performed
+,,,PC4,Adhere to the defined data quality standards to secure the ground data and annotated data from corruption and leakage
+,,,PC5,"Provide inputs to data engineers on tooling and processes for more efficient labeling, and to improve data quality"
+,,,PC6,Execute methods to identify misclassified content
+,,,PC7,Suggest changes in annotation schemes if and when required
+,,,PC8,Help create open-source datasets with the right annotation for an unbiased evaluation of annotation models
+Data Annotator,SSC/N8137,"Review, document and report annotations created on a regular interval",PC1,Maintain documentation of all solved/unsolved issues and errors
+,,,PC2,Help build data ontology to provide the model with as accurate annotated data as possible
+,,,PC3,Ensure the existence and maintenance of a balanced dataset to keep track and logs of data sets
+,,,PC4,Provide the linkage between the metadata and the annotations to depict the data association
+,,,PC5,Obtain real-time feedback and issue tracking during annotation process
+,,,PC6,"Provide timely summarization and reporting, as per the defined templates on annotated data"
+Standalone NOS,SSC/N8140,Concepts of Natural language processing (NLP),PC1.,"Collect and curate large, diverse and good quality datasets"
+,,,PC2.,"Set up suitable environment (Cloud platforms ,on-premise servers, hybrid etc.) for NLP solution development"
+,,,PC3.,Perform data preprocessing and clean the data to build high quality datasets that are free from noisy and unstructured data
+,,,PC4.,"Carry out sentiment analysis and whereever needed convert special characters (e.g., emojis) into meaningful data"
+,,,PC5.,"Automate data cleaning, data annotation etc. wherever possible"
+,,,PC6.,"Apply NLP techniques like Tokenization,stemming ,lemetization,PoS Tagging etc. while developing the NLP project requirements for eg.text classification,speech recognization etc."
+,,,PC7.,Develop/ choose/customize deep learning architectures or other machine learning models to the NLP project's requirements
+,,,PC8.,Develop/Implement/refine the NLP algorithms by coding and implementating mathematical concepts
+,,,PC9.,"Implement best practices for coninuous improvement in NLP models such as updating datasets, robust data preprocessing pipelines, regular model/ libraries evaluation, etc."
+,,,PC10.,Train the model using suitable datasets
+,,,PC11.,Test & fine tune the accuracy of the results of the project requirments
+,,,PC12.,"Deploy the model into real-world applications by integrating the model into software systems, optimizing its performance for real-time processing, and ensuring scalability."
+,,,PC13.,"Review the latest research papers and publications in the field of NLP to stay updated on new techniques, algorithms, and trends and the way to implement it"
+,,,PC14.,"Dedicate time to exploring innovative ideas, experimenting with unconventional approaches, and pushing the boundaries of computer vision research"
+,,,PC15.,"Participate in team meetings, brainstorming sessions, and code reviews to foster collaboration and maintain a productive workflow."
+,,,PC16.,"Collaborate with fellow researchers, engineers, and domain experts to discuss project goals, share insights, and gather feedback"
+,,,PC17.,"Document experimental setups, results, and findings for future reference and knowledge sharing within the team"
+,,,PC18.,"Prepare reports, presentations, and visualizations to communicate research outcomes to stakeholders"
+,,,PC19.,"Allocate time for learning about new tools, libraries, and methodologies that can enhance research productivity."
+,,,PC20.,"Engage in online courses, webinars, or workshops to stay updated on the latest advancements in the field"
+Standalone NOS,SSC/N8139,Concepts of Computer Vision,PC1.,"Work on data preprocessing tasks, such as cleaning, augmentation and formatting the data to be used for training and evaluation"
+,,,PC2.,Annotate data and automate data processing activities wherever possible
+,,,PC3.,"Analyze data to understand its characteristics, potential challenges, and opportunities for improvement."
+,,,PC4.,Develop and refine computer vision algorithms by coding and implementing mathematical concepts (decide algorithms based on the business requirements)
+,,,PC5.,Develop algorithms to imitate human vision capabilities by extracting meaningful information from visual data and making decisions based on that information
+,,,PC6.,"Apply visual analysis techniques such as image classification, object detection, image segmentation, facial recognition and other traditional image processing as well as advanced machine learning approaches, particularly deep learning"
+,,,PC7.,choose appropriate deep learning architectures or other machine learning models for specific tasks
+,,,PC8.,customize neural network architectures tailored to the project's requirements
+,,,PC9.,Design experiments to validate the performance of different computer vision models and algorithms
+,,,PC10.,"Run experiments using various datasets, configurations, and hyperparameters tuning to identify the best-performing setups"
+,,,PC11.,Train and fine-tune machine learning models using suitable frameworks
+,,,PC12.,Test & fine tune the accuracy of the results of the project requirements
+,,,PC13.,"Evaluate the models' performance using appropriate metrics and techniques, such as recision, recall, accuracy, F1 score, and cross-validation, to ensure accurate and reliable results"
+,,,PC14.,"Address technical challenges that arise during the development process, such as improving model accuracy, optimizing processing speed, or handling noisy data"
+,,,PC15.,"Deploy the model into real-world applications by integrating the model into software systems, optimizing its performance for real-time processing, and ensuring scalability."
+,,,PC16.,"Review the latest research papers and publications in the field of computer vision to stay updated on new techniques, algorithms, and trends"
+,,,PC17.,"Dedicate time to exploring innovative ideas, experimenting with unconventional approaches, and pushing the boundaries of computer vision research"
+,,,PC18.,"Participate in team meetings, brainstorming sessions, and code reviews to foster collaboration and maintain a productive workflow."
+,,,PC19.,"Collaborate with fellow researchers, engineers, and domain experts to discuss project goals, share insights, and gather feedback"
+,,,PC20.,"Document experimental setups, results, and findings for future reference and knowledge sharing within the team"
+,,,PC21.,"Prepare reports, presentations, and visualizations to communicate research outcomes to stakeholders"
+,,,PC22.,"Allocate time for learning about new tools, libraries, and methodologies that can enhance research productivity."
+,,,PC23.,"Engage in online courses, webinars, or workshops to stay updated on the latest advancements in the field"
+Standalone NOS,SSC/N8141,Data import process for analysis,PC1.,identify the objective of the analysis
+,,,PC2.,define the type of data to be imported
+,,,PC3.,define the volume of data to be imported
+,,,PC4.,define the key variables to be imported
+,,,PC5.,identify suitable sources for the data
+,,,PC6.,perform operations to acquire the data and store it in datasets or data frames
+,,,PC7.,populate metadata for the imported data
+,,,PC8.,validate imported data using appropriate tools & processes
+,,,PC9.,"validate the desired output with the relevant stakeholders within the organization, if required"
+Standalone NOS,SSC/N8147,Data preparation and refinement for analysis of information,PC1.,define the format and structure for the dataset
+,,,PC2.,define indexes and organize variables as per the defined format
+,,,PC3.,identify data types for each variable of the dataset
+,,,PC4.,identify and fix missing values in each variable of the dataset
+,,,PC5.,identify and fix incorrect data types in each variable of the dataset
+,,,PC6.,sort the data and create subsets of the data as required
+,,,PC7.,perform operations to transform data types of variables as required
+,,,PC8.,identify and deal with data redundancy by normalizing the dataset
+,,,PC9.,validate preprocessed data using appropriate tools and processes
+Standalone NOS,SSC/N8142,Exploratory data analysis,PC1.,identify the data types for each variable of the dataset
+,,,PC2.,identify the key variables required for modelling or analysis
+,,,PC3.,use statistical techniques to summarize the key variables in the dataset
+,,,PC4.,describe summary statistics for key variables using graphical formats
+,,,PC5.,"perform dimension reduction to optimize the variables in the dataset, if required"
+,,,PC6.,define the correlation factors using clustering and other techniques
+,,,PC7.,validate data using appropriate tools and processes
+,,,PC8.,repeat the analysis iteratively to arrive at optimal results
+,,,PC9.,validate the final output in consultation with the relevant stakeholders
+,,,PC10.,gain inferences from the final output of the data analysis
+,,,PC11.,develop a hypothesis model to explain the discovered inferences
+,,,PC12.,evaluate the results of the analysis and define business outcomes
+,,,PC13.,define prescriptive actions based on the defined business outcomes
+Standalone NOS,SSC/N8143,Prototyping algorithmic models,PC1.,identify the objective of the analysis
+,,,PC2.,develop a hypothesis based on the objective of the analysis
+,,,PC3.,"identify suitable libraries, packages, frameworks, applications to address the objective"
+,,,PC4.,"identify mode of learning, i.e. supervised or unsupervised"
+,,,PC5.,conduct research on existing statistical models to evaluate fitment with the objective
+,,,PC6.,"depending on the use case, identify if neural networks or deep learning models can be built"
+,,,PC7.,optimize the existing statistical models as per need
+,,,PC8.,identify suitable statistical models on the basis of data volumes and key variables
+,,,PC9.,define connectors or combinations of key variables for each statistical model
+,,,PC10.,determine and collect the training data
+,,,PC11.,design and prototype algorithmic model
+,,,PC12.,identify and resolve overfitting or underfitting of algorithmic model
+,,,PC13.,identify and resolve residual and dispersion errors with data
+,,,PC14.,define data flows such as human-in-the-loop constraints required to reinforce algorithmic models
+,,,PC15.,define and quantify success metrics for the algorithmic model
+,,,PC16.,create documentation on designed algorithmic models for future references and versioning
+,,,PC17.,retrain datasets that have been used for supervised learning on a continuous basis
+,,,PC18.,validate designed models using appropriate tools and processes
+,,,PC19.,Iterate the process to fine-tune the model til the desired quality of output or performance is achieved
+Standalone NOS,SSC/N8144,Applications of Algorithmic Models,PC1.,identify the objective of the analysis
+,,,PC2.,evaluate the dataset to determine a suitable approach
+,,,PC3.,"identify suitable libraries, packages, frameworks, applications to address the objective"
+,,,PC4.,"select suitable algorithmic models from available statistical analysis softwares, packages, libraries or tools"
+,,,PC5.,"apply the model for various use cases and scenarios such as vision, text recognition, image recognition, natual language processing etc."
+,,,PC6.,optimize selected algorithmic models to resolve any shortcomings or defects
+,,,PC7.,iterate the model in consultation with relevant stakeholders till the desired performance or quality of output is achieved
+,,,PC8.,validate the models implemented using approporiate tools and processes
+,,,PC9.,create documentation on applied algorithmic models for future references and versioning
+Standalone NOS,SSC/N8145,Data visualization,PC1.,identify the objective of the analysis
+,,,PC2.,"establish the purpose, scope, and target audience to report the business outcomes"
+,,,PC3.,"define the delivery mode and format (such as excel sheets, reports, APIs) to report the business outcomes"
+,,,PC4.,summarize the defined business outcomes into a narrative
+,,,PC5.,select suitable visualizations to represent the defined business outcomes
+,,,PC6.,present outcomes through selected visualizations using standard templates and agreed language standards
+,,,PC7.,validate visualizations with appropriate people
+,,,PC8.,publish visualizations for consumption across all agreed formats
+Foundational Standalone NOS,SSC/N8148,AI Foundation,PC1,Develop an understanding of various types of AI/ ML and their use cases
+,,,PC2,Familiarize with the basics of databases
+,,,PC3,Comprehend the basics of OOP and data structures
+,,,PC4,"Create basic algorithms and write basic programs in popular AI languages such as R, Python, etc."
+,,,PC5,Get an overview of statistical concepts applicable in AI
+,,,PC6,Familiarize with the popular tools used for data science and visualizations
+Foundational Standalone NOS,SSC/N8146,Big Data Analytics Foundation,PC1,Evaluate the technological trends which have led to Big Data Analytics
+,,,PC2,Explain the potential of Big Data Analytics in transforming businesses and customer use cases
+,,,PC3,"Explain business applications of Big Data including its use in analytics, marketing, retail, hospitality, consumer goods, etc."
+,,,PC4,Develop foundations in data structures and algorithms that form the basis of Big Data systems
+,,,PC5,Select and implement appropriate data structures to solve Big Data problems
+,,,PC6,Recognize the fundamentals of databases and Big Data platforms
+,,,PC7,Write Map and Reduce codes for distributed processing of data
+,,,PC8,Identify frequent data operations required for various types of data
+,,,PC9,Select appropriate data models that suit the requirements of data
+,,,PC10,Differentiate between a traditional Database Management System and a Big Data Management System
+,,,PC11,Retrieve data from sample database and Big Data management systems
+,,,PC12,Execute simple Big Data integration and processing operations on Hadoop and Spark platforms
+,,,PC13,Understand Data Privacy
+,,,PC14,Understand Data anonymization and its impact
+Standalone NOS,SSC/N8149,Essentials of Solution development in IT,PC1,"Select a problem statement and identify its key parameters (issue to be solved, target community, user needs and preferences, etc.)"
+,,,PC2,"Evaluate the requirements (functional, non-functional, etc.) and map them to the problem statement"
+,,,PC3,Design a solution blueprint for the problem statement and assess its feasibility
+,,,PC4,"Develop a project implementation plan encompassing project milestones, deadlines and resource allocation"
+,,,PC5,Determine the tech stack that would be suitable to build the proposed solution
+,,,PC6,Build the solution/product as per technical specifications
+,,,PC7,Test the solution/product to ensure and fix the bugs (if any)
+,,,PC8,Evaluate the performance of the solution/product to ensure it meets the desired criteria
+,,,PC9,"Create documents, reports, demonstrations and visualizations as required"
+,,,PC10,Participate in assessments to check technical skill-gain and project progress
+AI-Business Analyst,SSC/N8151,Business Analysis for AI,PC1.,"Work closely with stakeholders to understand the organization's strategic goals, challenges, and pain points."
+,,,PC2.,"Understand and define data privacy,data management and data monitring process with the stakeholders"
+,,,PC3.,Identify areas where AI can be applied to address these needs and drive value.
+,,,PC4.,"Understand the business processes, data requirements, and user needs based on that requirement gathering and analyze it, translating them into functional specifications for AI-powered solutions"
+,,,PC5.,Work with data scientists and engineers to define the data strategy and model requirements.
+,,,PC6.,"Perform data analysis to identify patterns, trends, and insights that can be used to train machine learning models."
+AI-Business Analyst,SSC/N8150,AI Solution development & implementation,PC1.,"Design AI Solution by selecting appropriate AI algorithms, defining system architecture, and designing user interfaces, based on the business requirements and data analysis"
+,,,PC2.,"Oversee the evaluation and testing of AI solutions to ensure they meet quality standards and business requirements by conducting user acceptance test, performance test, and validation against success criteria"
+,,,PC3.,"Provide support and guidance to stakeholders, address any issues that arise, and facilitate change management by collaborating with cross-functional teams during the implementation phase to ensure successful deployment of AI solutions."
+,,,PC4.,"Monitor the performance of AI solutions after deployment and identify opportunities for optimization by refining algorithms, improving data quality, or addressing user feedback to enhance system effectiveness."
+,,,PC5.,Stay updated on the latest developments in AI technologies and industry best practices.
+,,,PC6.,Continuously seek opportunities to innovate and improve business processes through the application of AI.
+,,,PC7.,Understand the ethical challenges with the application/usage of AI
+Micro credential,SSC/MCR-0007,Basic Gen-AI Literacy,PC1,Elaborate different type of artificial intelligence.
+,,,PC2,Define Generative AI its use cases and industry applications
+,,,PC3,Define the fundamental concepts of generative AI and its core models
+,,,PC4,Understand prompts usage in Gen-AI
+,,,PC5,Elaborate the learning approaches for model training
+,,,PC6,"Elaborate Gen-AI platform, algorithms, and architecture"
+,,,PC7,Describe the ethical concerns associated with generative AI.
+,,,PC8,Explain the considerations for the responsible use of generative AI.
