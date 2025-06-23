@@ -93,7 +93,6 @@ PC Description: {standard.pc_description}
         final_prompt = custom_prompt if custom_prompt else base_prompt
         
         try:
-            print(f"Final prompt: {final_prompt}")
             response = self.model.generate_content(final_prompt)
             
             # Clean up the response text
