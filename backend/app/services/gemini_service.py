@@ -87,14 +87,35 @@ PC Description: {standard.pc_description}
         final_prompt = custom_prompt if custom_prompt else base_prompt
         
         try:
+            print(f"Final prompt: {final_prompt}")
             response = self.model.generate_content(final_prompt)
+            print(f"Raw Gemini response: {response.text}")
+            
+            # Clean up the response text
+            response_text = response.text.strip()
+            
+            # Remove any markdown code blocks if present
+            if response_text.startswith('```json'):
+                response_text = response_text[7:]  # Remove ```json
+            if response_text.startswith('```'):
+                response_text = response_text[3:]  # Remove ```
+            if response_text.endswith('```'):
+                response_text = response_text[:-3]  # Remove trailing ```
+            
+            response_text = response_text.strip()
+            print(f"Cleaned response text: {response_text}")
+            
             # Parse the JSON response
-            result = json.loads(response.text.strip())
+            result = json.loads(response_text)
+            print(f"Parsed JSON result: {result}")
             return result
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
+            print(f"JSON decode error: {e}")
+            print(f"Failed to parse response: {response.text}")
             # If JSON parsing fails, return a fallback response
             return []
         except Exception as e:
+            print(f"General error in map_content_to_standards: {e}")
             raise Exception(f"Error mapping content to standards: {str(e)}")
 
     async def generate_custom_prompt(self, task_type: str, context: str = "") -> str:

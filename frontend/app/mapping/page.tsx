@@ -22,7 +22,7 @@ export default function MappingPage() {
   const [jobRoles, setJobRoles] = useState<{job_role: string}[]>([]);
   const [selectedContentId, setSelectedContentId] = useState<string>('');
   const [selectedSettingsId, setSelectedSettingsId] = useState<string>('');
-  const [selectedJobRoleFilter, setSelectedJobRoleFilter] = useState<string>('');
+  const [selectedJobRoleFilter, setSelectedJobRoleFilter] = useState<string>('all');
   const [isMapping, setIsMapping] = useState(false);
   const [mappingResults, setMappingResults] = useState<ContentMappingResponse | null>(null);
   const [mappingError, setMappingError] = useState<string | null>(null);
@@ -72,7 +72,7 @@ export default function MappingPage() {
       const response = await apiClient.mapping.mapContent({
         content_id: parseInt(selectedContentId),
         settings_id: selectedSettingsId ? parseInt(selectedSettingsId) : undefined,
-        job_role_filter: selectedJobRoleFilter || undefined
+        job_role_filter: selectedJobRoleFilter && selectedJobRoleFilter !== 'all' ? selectedJobRoleFilter : undefined
       });
 
       setMappingResults(response.data);
@@ -198,7 +198,7 @@ export default function MappingPage() {
                       <SelectValue placeholder="Filter by job role" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Job Roles</SelectItem>
+                      <SelectItem value="all">All Job Roles</SelectItem>
                       {jobRoles.map((role, index) => (
                         <SelectItem key={index} value={role.job_role}>
                           {role.job_role}
@@ -241,7 +241,7 @@ export default function MappingPage() {
                 )}
 
                 {/* Job Role Filter Preview */}
-                {selectedJobRoleFilter && (
+                {selectedJobRoleFilter && selectedJobRoleFilter !== 'all' && (
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Active Job Role Filter</label>
                     <div className="p-3 bg-purple-50 rounded-lg">
@@ -252,7 +252,7 @@ export default function MappingPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setSelectedJobRoleFilter('')}
+                          onClick={() => setSelectedJobRoleFilter('all')}
                           className="h-6 px-2 text-xs text-purple-600 hover:text-purple-700"
                         >
                           Clear

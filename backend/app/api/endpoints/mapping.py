@@ -78,15 +78,44 @@ async def map_content_to_standards(
         mapped_standards = []
         total_confidence = 0
         
+        if not mapping_results:
+            # If no results from Gemini, return empty response
+            return ContentMappingResponse(
+                content_id=request.content_id,
+                mapped_standards=[],
+                confidence_score=0,
+                summary_used=course_content.summary
+            )
+        
         for result in mapping_results:
-            # Find the corresponding standard in database
-            standard = db.query(LexNormStandard).filter(
-                LexNormStandard.nos_code == result.get("nos_code")
-            ).first()
-            
-            if standard:
-                mapped_standards.append(standard)
-                total_confidence += result.get("confidence_score", 0)
+            try:
+                # Find the corresponding standard in database
+                nos_code = result.get("nos_code")
+                pc_code = result.get("pc_code")
+                
+                if not nos_code:
+                    continue
+                
+                # Try exact match first
+                standard = db.query(LexNormStandard).filter(
+                    LexNormStandard.nos_code == nos_code,
+                    LexNormStandard.pc_code == pc_code
+                ).first()
+                
+                # If exact match not found, try just nos_code match
+                if not standard:
+                    standard = db.query(LexNormStandard).filter(
+                        LexNormStandard.nos_code == nos_code
+                    ).first()
+                
+                if standard:
+                    mapped_standards.append(standard)
+                    total_confidence += result.get("confidence_score", 0)
+                    
+            except Exception as e:
+                # Log the error but continue processing other results
+                print(f"Error processing mapping result {result}: {str(e)}")
+                continue
         
         # Calculate average confidence
         avg_confidence = total_confidence / len(mapping_results) if mapping_results else 0
