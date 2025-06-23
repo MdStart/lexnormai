@@ -100,8 +100,17 @@ class ContentMappingRequest(BaseModel):
     job_role_filter: Optional[str] = None
 
 
+class MappedStandardDetail(BaseModel):
+    """Individual mapping result with confidence and analysis"""
+    standard: LexNormStandardResponse
+    confidence_score: float
+    reasoning: str
+    gap_analysis: Optional[str] = None
+
+
 class ContentMappingResponse(BaseModel):
     content_id: int
-    mapped_standards: list[LexNormStandardResponse]
-    confidence_score: Optional[float] = None
+    mapped_standards: list[MappedStandardDetail]
+    overall_confidence_score: Optional[float] = None
+    overall_gap_analysis: Optional[str] = None
     summary_used: str 

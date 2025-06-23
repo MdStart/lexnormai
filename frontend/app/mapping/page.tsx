@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { apiClient, CourseContent, LexNormSettings, LexNormStandard, ContentMappingResponse } from '@/lib/api';
+import { apiClient, CourseContent, LexNormSettings, LexNormStandard, ContentMappingResponse, MappedStandardDetail } from '@/lib/api';
 import { Zap, FileText, Settings, Target, CheckCircle, AlertCircle, Eye, Download } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -86,27 +86,52 @@ export default function MappingPage() {
   const selectedContent = contents.find(c => c.id.toString() === selectedContentId);
   const selectedSettings = settings.find(s => s.id.toString() === selectedSettingsId);
 
-  const exportResults = () => {
+  const exportResults = (format: string) => {
     if (!mappingResults) return;
 
-    const csvContent = [
-      ['Job Role', 'NOS Code', 'NOS Name', 'PC Code', 'PC Description'],
-      ...mappingResults.mapped_standards.map(standard => [
-        standard.job_role,
-        standard.nos_code,
-        standard.nos_name,
-        standard.pc_code,
-        standard.pc_description
-      ])
-    ].map(row => row.map(cell => `&quot;${cell}&quot;`).join(',')).join('\n');
+    if (format === 'csv') {
+      const csvContent = [
+        ['Job Role', 'NOS Code', 'NOS Name', 'PC Code', 'PC Description', 'Confidence Score', 'Reasoning', 'Gap Analysis'],
+        ...mappingResults.mapped_standards.map(detail => [
+          detail.standard.job_role,
+          detail.standard.nos_code,
+          detail.standard.nos_name,
+          detail.standard.pc_code,
+          detail.standard.pc_description,
+          detail.confidence_score.toString(),
+          detail.reasoning,
+          detail.gap_analysis || ''
+        ])
+      ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `mapping_results_${selectedContent?.title.replace(/[^a-z0-9]/gi, '_')}.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mapping_results_${selectedContent?.title.replace(/[^a-z0-9]/gi, '_')}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } else if (format === 'pdf') {
+      // For now, create a simple text-based PDF alternative using CSV data
+      const pdfContent = `Content Mapping Results\n\nContent: ${selectedContent?.title || 'Unknown'}\nOverall Confidence: ${mappingResults.overall_confidence_score?.toFixed(1) || 'N/A'}%\nStandards Found: ${mappingResults.mapped_standards.length}\n\n` +
+        mappingResults.mapped_standards.map((detail, index) => 
+          `${index + 1}. ${detail.standard.job_role}\n` +
+          `   NOS: ${detail.standard.nos_code} - ${detail.standard.nos_name}\n` +
+          `   PC: ${detail.standard.pc_code}\n` +
+          `   Confidence: ${detail.confidence_score}%\n` +
+          `   Reasoning: ${detail.reasoning}\n` +
+          `   Gap Analysis: ${detail.gap_analysis || 'N/A'}\n\n`
+        ).join('') +
+        (mappingResults.overall_gap_analysis ? `\nOverall Gap Analysis:\n${mappingResults.overall_gap_analysis}` : '');
+
+      const blob = new Blob([pdfContent], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mapping_results_${selectedContent?.title.replace(/[^a-z0-9]/gi, '_')}.txt`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
   };
 
   if (isLoading) {
@@ -330,15 +355,26 @@ export default function MappingPage() {
                     </CardDescription>
                   </div>
                   {mappingResults && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={exportResults}
-                      className="flex items-center gap-2"
-                    >
-                      <Download className="w-4 h-4" />
-                      Export CSV
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => exportResults('csv')}
+                        className="flex items-center gap-2"
+                      >
+                        <Download className="w-4 h-4" />
+                        Export CSV
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => exportResults('pdf')}
+                        className="flex items-center gap-2"
+                      >
+                        <Download className="w-4 h-4" />
+                        Export PDF
+                      </Button>
+                    </div>
                   )}
                 </div>
               </CardHeader>
@@ -361,8 +397,9 @@ export default function MappingPage() {
 
                 {mappingResults && (
                   <Tabs defaultValue="results" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2">
+                    <TabsList className="grid w-full grid-cols-3">
                       <TabsTrigger value="results">Mapping Results</TabsTrigger>
+                      <TabsTrigger value="gaps">Gap Analysis</TabsTrigger>
                       <TabsTrigger value="summary">Content Summary</TabsTrigger>
                     </TabsList>
                     
@@ -372,9 +409,9 @@ export default function MappingPage() {
                           <CheckCircle className="w-5 h-5 text-green-600" />
                           <span className="font-medium">Mapping Complete</span>
                         </div>
-                        {mappingResults.confidence_score && (
+                        {mappingResults.overall_confidence_score && (
                           <Badge variant="outline">
-                            Confidence: {mappingResults.confidence_score.toFixed(1)}%
+                            Confidence: {mappingResults.overall_confidence_score.toFixed(1)}%
                           </Badge>
                         )}
                         <Badge variant="secondary">
@@ -391,30 +428,44 @@ export default function MappingPage() {
                               <TableHead>NOS Name</TableHead>
                               <TableHead>PC Code</TableHead>
                               <TableHead>PC Description</TableHead>
+                              <TableHead>Confidence</TableHead>
+                              <TableHead>Reasoning</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {mappingResults.mapped_standards.map((standard, index) => (
+                            {mappingResults.mapped_standards.map((detail, index) => (
                               <TableRow key={index}>
                                 <TableCell className="font-medium">
-                                  {standard.job_role}
+                                  {detail.standard.job_role}
                                 </TableCell>
                                 <TableCell>
-                                  <Badge variant="outline">{standard.nos_code}</Badge>
+                                  <Badge variant="outline">{detail.standard.nos_code}</Badge>
                                 </TableCell>
                                 <TableCell className="max-w-xs">
-                                  <div className="truncate" title={standard.nos_name}>
-                                    {standard.nos_name}
+                                  <div className="truncate" title={detail.standard.nos_name}>
+                                    {detail.standard.nos_name}
                                   </div>
                                 </TableCell>
                                 <TableCell>
-                                  <Badge variant="secondary">{standard.pc_code}</Badge>
+                                  <Badge variant="secondary">{detail.standard.pc_code}</Badge>
                                 </TableCell>
                                 <TableCell className="max-w-md">
                                   <div className="text-sm text-gray-600">
-                                    {standard.pc_description.length > 150
-                                      ? standard.pc_description.substring(0, 150) + '...'
-                                      : standard.pc_description}
+                                    {detail.standard.pc_description.length > 100
+                                      ? detail.standard.pc_description.substring(0, 100) + '...'
+                                      : detail.standard.pc_description}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <Badge variant="outline" className="text-green-700 border-green-300">
+                                    {detail.confidence_score}%
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="max-w-sm">
+                                  <div className="text-sm text-gray-600">
+                                    {detail.reasoning.length > 80
+                                      ? detail.reasoning.substring(0, 80) + '...'
+                                      : detail.reasoning}
                                   </div>
                                 </TableCell>
                               </TableRow>
@@ -422,6 +473,60 @@ export default function MappingPage() {
                           </TableBody>
                         </Table>
                       </div>
+                      
+                      {/* Gap Analysis Section */}
+                      {mappingResults.overall_gap_analysis && (
+                        <div className="bg-orange-50 p-4 rounded-lg mt-4">
+                          <h4 className="font-semibold mb-2 text-orange-800">Overall Gap Analysis</h4>
+                          <div className="text-sm text-orange-700 whitespace-pre-wrap">
+                            {mappingResults.overall_gap_analysis}
+                          </div>
+                        </div>
+                      )}
+                    </TabsContent>
+                    
+                    <TabsContent value="gaps" className="space-y-4">
+                      {/* Overall Gap Analysis */}
+                      {mappingResults.overall_gap_analysis && (
+                        <div className="bg-orange-50 p-4 rounded-lg">
+                          <h4 className="font-semibold mb-2 text-orange-800">Overall Gap Analysis</h4>
+                          <div className="text-sm text-orange-700 whitespace-pre-wrap">
+                            {mappingResults.overall_gap_analysis}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Individual Gap Analysis */}
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-gray-800">Individual Standard Gaps</h4>
+                        {mappingResults.mapped_standards.map((detail, index) => (
+                          detail.gap_analysis && (
+                            <div key={index} className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                              <div className="flex items-start justify-between mb-2">
+                                <div>
+                                  <Badge variant="outline" className="mb-1">{detail.standard.nos_code}</Badge>
+                                  <h5 className="font-medium text-sm text-gray-800">{detail.standard.nos_name}</h5>
+                                </div>
+                                <Badge variant="outline" className="text-green-700 border-green-300">
+                                  {detail.confidence_score}%
+                                </Badge>
+                              </div>
+                              <div className="text-sm text-yellow-800 mb-2">
+                                <strong>Gap Analysis:</strong>
+                              </div>
+                              <div className="text-sm text-yellow-700 whitespace-pre-wrap">
+                                {detail.gap_analysis}
+                              </div>
+                            </div>
+                          )
+                        ))}
+                      </div>
+                      
+                      {!mappingResults.overall_gap_analysis && !mappingResults.mapped_standards.some(d => d.gap_analysis) && (
+                        <div className="text-center py-8 text-gray-500">
+                          <p>No gap analysis available for this mapping.</p>
+                        </div>
+                      )}
                     </TabsContent>
                     
                     <TabsContent value="summary" className="space-y-4">
@@ -466,9 +571,19 @@ export default function MappingPage() {
                   >
                     Map More Content
                   </Button>
-                  <Button onClick={exportResults}>
+                  <Button
+                    variant="outline"
+                    onClick={() => exportResults('csv')}
+                  >
                     <Download className="w-4 h-4 mr-2" />
-                    Export Results
+                    Export CSV
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => exportResults('pdf')}
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Export PDF
                   </Button>
                 </div>
               </div>

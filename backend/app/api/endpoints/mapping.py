@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from ...core.database import get_db
 from ...models.models import CourseContent, LexNormStandard, LexNormSettings
-from ...schemas.schemas import ContentMappingRequest, ContentMappingResponse
+from ...schemas.schemas import ContentMappingRequest, ContentMappingResponse, MappedStandardDetail, LexNormStandardResponse
 from ...services.gemini_service import gemini_service
 
 router = APIRouter()
@@ -77,13 +77,15 @@ async def map_content_to_standards(
         # Convert mapping results to standard responses
         mapped_standards = []
         total_confidence = 0
+        overall_gap_analysis = None
         
         if not mapping_results:
             # If no results from Gemini, return empty response
             return ContentMappingResponse(
                 content_id=request.content_id,
                 mapped_standards=[],
-                confidence_score=0,
+                overall_confidence_score=0,
+                overall_gap_analysis="No mapping results available",
                 summary_used=course_content.summary
             )
         
@@ -92,6 +94,13 @@ async def map_content_to_standards(
                 # Find the corresponding standard in database
                 nos_code = result.get("nos_code")
                 pc_code = result.get("pc_code")
+                confidence_score = result.get("confidence_score", 0)
+                reasoning = result.get("reasoning", "")
+                gap_analysis = result.get("gap_analysis", "")
+                
+                # Extract overall gap analysis from first result
+                if overall_gap_analysis is None:
+                    overall_gap_analysis = result.get("overall_gap_analysis", "")
                 
                 if not nos_code:
                     continue
@@ -109,8 +118,28 @@ async def map_content_to_standards(
                     ).first()
                 
                 if standard:
-                    mapped_standards.append(standard)
-                    total_confidence += result.get("confidence_score", 0)
+                    # Create standard response
+                    standard_response = LexNormStandardResponse(
+                        id=standard.id,
+                        job_role=standard.job_role,
+                        nos_code=standard.nos_code,
+                        nos_name=standard.nos_name,
+                        pc_code=standard.pc_code,
+                        pc_description=standard.pc_description,
+                        created_at=standard.created_at,
+                        updated_at=standard.updated_at
+                    )
+                    
+                    # Create detailed mapping result
+                    mapped_detail = MappedStandardDetail(
+                        standard=standard_response,
+                        confidence_score=confidence_score,
+                        reasoning=reasoning,
+                        gap_analysis=gap_analysis
+                    )
+                    
+                    mapped_standards.append(mapped_detail)
+                    total_confidence += confidence_score
                     
             except Exception as e:
                 # Log the error but continue processing other results
@@ -123,7 +152,8 @@ async def map_content_to_standards(
         return ContentMappingResponse(
             content_id=request.content_id,
             mapped_standards=mapped_standards,
-            confidence_score=avg_confidence,
+            overall_confidence_score=avg_confidence,
+            overall_gap_analysis=overall_gap_analysis or "No overall gap analysis available",
             summary_used=course_content.summary
         )
         

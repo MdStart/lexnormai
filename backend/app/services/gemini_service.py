@@ -61,19 +61,26 @@ PC Description: {standard.pc_description}
         1. Analyze the course content summary for skills, competencies, and learning outcomes
         2. Match these with the most relevant occupational standards
         3. Provide a confidence score (0-100) for each match
-        4. Return only the top 10 most relevant matches
-        5. Format the response as a JSON array with the following structure:
-        [
-            {{
-                "job_role": "role_name",
-                "nos_code": "code",
-                "nos_name": "name",
-                "pc_code": "pc_code",
-                "pc_description": "description",
-                "confidence_score": 85,
-                "reasoning": "brief explanation of why this standard matches"
-            }}
-        ]
+        4. Provide detailed reasoning for why each standard matches
+        5. Include gap analysis for each mapping (what's missing or partially covered)
+        6. Return only the top 10 most relevant matches
+        7. At the end, provide an overall gap analysis summarizing what occupational standards are missing or not well covered
+        8. Format the response as a JSON object with the following structure:
+        {{
+            "mappings": [
+                {{
+                    "job_role": "role_name",
+                    "nos_code": "code",
+                    "nos_name": "name",
+                    "pc_code": "pc_code",
+                    "pc_description": "description",
+                    "confidence_score": 85,
+                    "reasoning": "detailed explanation of why this standard matches the course content",
+                    "gap_analysis": "explanation of what aspects are missing or only partially covered"
+                }}
+            ],
+            "overall_gap_analysis": "comprehensive analysis of what occupational competencies are missing from the course content and recommendations for improvement"
+        }}
         
         Course Content Summary:
         {summary}
@@ -81,7 +88,7 @@ PC Description: {standard.pc_description}
         Available Occupational Standards:
         {standards_text}
         
-        Please provide only the JSON response without any additional text.
+        Please provide only the JSON response without any additional text or markdown formatting.
         """
         
         final_prompt = custom_prompt if custom_prompt else base_prompt
@@ -108,7 +115,25 @@ PC Description: {standard.pc_description}
             # Parse the JSON response
             result = json.loads(response_text)
             print(f"Parsed JSON result: {result}")
-            return result
+            
+            # Handle both old and new response formats
+            if isinstance(result, list):
+                # Old format - return as is for backward compatibility
+                return result
+            elif isinstance(result, dict) and "mappings" in result:
+                # New format - extract mappings and include overall gap analysis
+                mappings = result.get("mappings", [])
+                overall_gap = result.get("overall_gap_analysis", "")
+                
+                # Add overall gap analysis to each mapping for now (we'll handle it in the API layer)
+                for mapping in mappings:
+                    mapping["overall_gap_analysis"] = overall_gap
+                
+                return mappings
+            else:
+                # Unknown format
+                print(f"Unknown response format: {result}")
+                return []
         except json.JSONDecodeError as e:
             print(f"JSON decode error: {e}")
             print(f"Failed to parse response: {response.text}")
