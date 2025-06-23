@@ -2,9 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from ...core.database import get_db
-from ...models.models import CourseContent, LexNormStandard, LexNormSettings
-from ...schemas.schemas import ContentMappingRequest, ContentMappingResponse, MappedStandardDetail, LexNormStandardResponse
+from ...models.models import CourseContent, LexNormStandard, LexNormSettings, MappingResult
+from ...schemas.schemas import ContentMappingRequest, ContentMappingResponse, MappedStandardDetail, LexNormStandardResponse, MappingResultCreate
 from ...services.gemini_service import gemini_service
+import json
 
 router = APIRouter()
 
@@ -149,13 +150,59 @@ async def map_content_to_standards(
         # Calculate average confidence
         avg_confidence = total_confidence / len(mapping_results) if mapping_results else 0
         
-        return ContentMappingResponse(
+        # Create the response object
+        response = ContentMappingResponse(
             content_id=request.content_id,
             mapped_standards=mapped_standards,
             overall_confidence_score=avg_confidence,
             overall_gap_analysis=overall_gap_analysis or "No overall gap analysis available",
             summary_used=course_content.summary
         )
+        
+        # Save the complete mapping result to database
+        try:
+            mapping_result_data = {
+                "content_id": request.content_id,
+                "mapped_standards": [
+                    {
+                        "standard": {
+                            "id": detail.standard.id,
+                            "job_role": detail.standard.job_role,
+                            "nos_code": detail.standard.nos_code,
+                            "nos_name": detail.standard.nos_name,
+                            "pc_code": detail.standard.pc_code,
+                            "pc_description": detail.standard.pc_description,
+                            "created_at": detail.standard.created_at.isoformat(),
+                            "updated_at": detail.standard.updated_at.isoformat() if detail.standard.updated_at else None
+                        },
+                        "confidence_score": detail.confidence_score,
+                        "reasoning": detail.reasoning,
+                        "gap_analysis": detail.gap_analysis
+                    }
+                    for detail in mapped_standards
+                ],
+                "overall_confidence_score": avg_confidence,
+                "overall_gap_analysis": overall_gap_analysis,
+                "summary_used": course_content.summary
+            }
+            
+            mapping_result = MappingResult(
+                content_id=request.content_id,
+                settings_id=request.settings_id,
+                job_role_filter=request.job_role_filter,
+                mapping_data=mapping_result_data,
+                overall_confidence_score=f"{avg_confidence:.1f}" if avg_confidence else None,
+                standards_count=len(mapped_standards)
+            )
+            
+            db.add(mapping_result)
+            db.commit()
+            
+        except Exception as e:
+            # Log the error but don't fail the request
+            print(f"Error saving mapping result to database: {str(e)}")
+        
+        return response
         
     except Exception as e:
         raise HTTPException(
@@ -204,6 +251,61 @@ async def get_unique_job_roles(db: Session = Depends(get_db)):
     
     job_roles = db.query(LexNormStandard.job_role).distinct().all()
     return [{"job_role": role[0]} for role in job_roles]
+
+
+@router.get("/results/")
+async def get_mapping_results(
+    skip: int = 0,
+    limit: int = 100,
+    content_id: Optional[int] = None,
+    db: Session = Depends(get_db)
+):
+    """Get saved mapping results with optional filtering by content."""
+    
+    query = db.query(MappingResult)
+    
+    if content_id:
+        query = query.filter(MappingResult.content_id == content_id)
+    
+    results = query.order_by(MappingResult.created_at.desc()).offset(skip).limit(limit).all()
+    
+    return [
+        {
+            "id": result.id,
+            "content_id": result.content_id,
+            "settings_id": result.settings_id,
+            "job_role_filter": result.job_role_filter,
+            "overall_confidence_score": result.overall_confidence_score,
+            "standards_count": result.standards_count,
+            "created_at": result.created_at,
+            "mapping_data": result.mapping_data
+        }
+        for result in results
+    ]
+
+
+@router.get("/results/{result_id}")
+async def get_mapping_result_by_id(
+    result_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get a specific mapping result by ID."""
+    
+    result = db.query(MappingResult).filter(MappingResult.id == result_id).first()
+    
+    if not result:
+        raise HTTPException(status_code=404, detail="Mapping result not found")
+    
+    return {
+        "id": result.id,
+        "content_id": result.content_id,
+        "settings_id": result.settings_id,
+        "job_role_filter": result.job_role_filter,
+        "overall_confidence_score": result.overall_confidence_score,
+        "standards_count": result.standards_count,
+        "created_at": result.created_at,
+        "mapping_data": result.mapping_data
+    }
 
 
 @router.post("/batch-map")

@@ -113,4 +113,28 @@ class ContentMappingResponse(BaseModel):
     mapped_standards: list[MappedStandardDetail]
     overall_confidence_score: Optional[float] = None
     overall_gap_analysis: Optional[str] = None
-    summary_used: str 
+    summary_used: str
+
+
+class MappingResultCreate(BaseModel):
+    content_id: int
+    settings_id: Optional[int] = None
+    job_role_filter: Optional[str] = None
+    mapping_data: dict
+    overall_confidence_score: Optional[str] = None
+    standards_count: int
+
+
+class MappingResultResponse(BaseModel):
+    id: int
+    content_id: int
+    settings_id: Optional[int] = None
+    job_role_filter: Optional[str] = None
+    mapping_data: dict
+    overall_confidence_score: Optional[str] = None
+    standards_count: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True 

@@ -90,6 +90,7 @@ export default function MappingPage() {
     if (!mappingResults) return;
 
     if (format === 'csv') {
+      // Only PC code level data - no overall statistics
       const csvContent = [
         ['Job Role', 'NOS Code', 'NOS Name', 'PC Code', 'PC Description', 'Confidence Score', 'Reasoning', 'Gap Analysis'],
         ...mappingResults.mapped_standards.map(detail => [
@@ -112,17 +113,16 @@ export default function MappingPage() {
       a.click();
       window.URL.revokeObjectURL(url);
     } else if (format === 'pdf') {
-      // For now, create a simple text-based PDF alternative using CSV data
-      const pdfContent = `Content Mapping Results\n\nContent: ${selectedContent?.title || 'Unknown'}\nOverall Confidence: ${mappingResults.overall_confidence_score?.toFixed(1) || 'N/A'}%\nStandards Found: ${mappingResults.mapped_standards.length}\n\n` +
-        mappingResults.mapped_standards.map((detail, index) => 
-          `${index + 1}. ${detail.standard.job_role}\n` +
-          `   NOS: ${detail.standard.nos_code} - ${detail.standard.nos_name}\n` +
-          `   PC: ${detail.standard.pc_code}\n` +
-          `   Confidence: ${detail.confidence_score}%\n` +
-          `   Reasoning: ${detail.reasoning}\n` +
-          `   Gap Analysis: ${detail.gap_analysis || 'N/A'}\n\n`
-        ).join('') +
-        (mappingResults.overall_gap_analysis ? `\nOverall Gap Analysis:\n${mappingResults.overall_gap_analysis}` : '');
+      // Store as .txt format with only PC code level data
+      const pdfContent = mappingResults.mapped_standards.map((detail, index) => 
+        `${index + 1}. ${detail.standard.job_role}\n` +
+        `NOS: ${detail.standard.nos_code} - ${detail.standard.nos_name}\n` +
+        `PC: ${detail.standard.pc_code}\n` +
+        `PC Description: ${detail.standard.pc_description}\n` +
+        `Confidence: ${detail.confidence_score}%\n` +
+        `Reasoning: ${detail.reasoning}\n` +
+        `Gap Analysis: ${detail.gap_analysis || 'N/A'}\n`
+      ).join('\n');
 
       const blob = new Blob([pdfContent], { type: 'text/plain' });
       const url = window.URL.createObjectURL(blob);

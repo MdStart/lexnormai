@@ -27,7 +27,6 @@ class GeminiService:
         
         final_prompt = custom_prompt if custom_prompt else base_prompt
         full_prompt = f"{final_prompt}\n\n{content}"
-        print(f"Full prompt: {full_prompt}")
         try:
             response = self.model.generate_content(full_prompt)
             return response.text
@@ -96,7 +95,6 @@ PC Description: {standard.pc_description}
         try:
             print(f"Final prompt: {final_prompt}")
             response = self.model.generate_content(final_prompt)
-            print(f"Raw Gemini response: {response.text}")
             
             # Clean up the response text
             response_text = response.text.strip()
@@ -110,11 +108,9 @@ PC Description: {standard.pc_description}
                 response_text = response_text[:-3]  # Remove trailing ```
             
             response_text = response_text.strip()
-            print(f"Cleaned response text: {response_text}")
             
             # Parse the JSON response
             result = json.loads(response_text)
-            print(f"Parsed JSON result: {result}")
             
             # Handle both old and new response formats
             if isinstance(result, list):
