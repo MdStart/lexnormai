@@ -113,16 +113,40 @@ export default function MappingPage() {
       a.click();
       window.URL.revokeObjectURL(url);
     } else if (format === 'pdf') {
-      // Store as .txt format with only PC code level data
-      const pdfContent = mappingResults.mapped_standards.map((detail, index) => 
-        `${index + 1}. ${detail.standard.job_role}\n` +
-        `NOS: ${detail.standard.nos_code} - ${detail.standard.nos_name}\n` +
-        `PC: ${detail.standard.pc_code}\n` +
-        `PC Description: ${detail.standard.pc_description}\n` +
-        `Confidence: ${detail.confidence_score}%\n` +
-        `Reasoning: ${detail.reasoning}\n` +
-        `Gap Analysis: ${detail.gap_analysis || 'N/A'}\n`
-      ).join('\n');
+      // PDF export with ALL mapping data
+      const pdfContent = `CONTENT MAPPING RESULTS
+========================================
+
+Content: ${selectedContent?.title || 'Unknown'}
+Overall Confidence: ${mappingResults.overall_confidence_score?.toFixed(1) || 'N/A'}%
+Standards Found: ${mappingResults.mapped_standards.length}
+Generated: ${new Date().toLocaleString()}
+
+DETAILED MAPPING RESULTS
+========================================
+
+${mappingResults.mapped_standards.map((detail, index) => 
+`${index + 1}. ${detail.standard.job_role}
+----------------------------------------
+NOS Code: ${detail.standard.nos_code}
+NOS Name: ${detail.standard.nos_name}
+PC Code: ${detail.standard.pc_code}
+PC Description: ${detail.standard.pc_description}
+Confidence Score: ${detail.confidence_score}%
+Reasoning: ${detail.reasoning}
+Gap Analysis: ${detail.gap_analysis || 'N/A'}
+`
+).join('\n')}
+
+${mappingResults.overall_gap_analysis ? `
+OVERALL GAP ANALYSIS
+========================================
+${mappingResults.overall_gap_analysis}
+
+` : ''}
+CONTENT SUMMARY USED FOR MAPPING
+========================================
+${mappingResults.summary_used}`;
 
       const blob = new Blob([pdfContent], { type: 'text/plain' });
       const url = window.URL.createObjectURL(blob);
