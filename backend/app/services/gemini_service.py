@@ -8,7 +8,7 @@ import json
 class GeminiService:
     def __init__(self):
         genai.configure(api_key=settings.gemini_api_key)
-        self.model = genai.GenerativeModel('gemini-pro')
+        self.model = genai.GenerativeModel('gemini-2.5-pro')
 
     async def generate_content_summary(self, content: str, custom_prompt: str = "") -> str:
         """Generate a comprehensive summary of course content."""
@@ -27,7 +27,7 @@ class GeminiService:
         
         final_prompt = custom_prompt if custom_prompt else base_prompt
         full_prompt = f"{final_prompt}\n\n{content}"
-        
+        print(f"Full prompt: {full_prompt}")
         try:
             response = self.model.generate_content(full_prompt)
             return response.text

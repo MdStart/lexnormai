@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, Enum
+from sqlalchemy import Column, Integer, String, Text, DateTime
 from sqlalchemy.sql import func
 from ..core.database import Base
 import enum
@@ -37,7 +37,7 @@ class LexNormSettings(Base):
     __tablename__ = "lexnorm_settings"
     
     id = Column(Integer, primary_key=True, index=True)
-    task_type = Column(Enum(TaskTypeEnum), default=TaskTypeEnum.CONTENT_SUMMARY)
+    task_type = Column(String(50), default="content_summary")
     country = Column(String(100), default="India")
     lexnorm_standard = Column(String(100), default="NOS-National Occupational Standard")
     llm_model = Column(String(100), default="gemini-2.5-pro")

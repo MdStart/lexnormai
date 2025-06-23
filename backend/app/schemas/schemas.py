@@ -1,7 +1,6 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Literal
 from datetime import datetime
-from ..models.models import TaskTypeEnum
 
 
 # Course Content Schemas
@@ -54,7 +53,7 @@ class LexNormStandardResponse(LexNormStandardBase):
 
 # Lex Norm Settings Schemas
 class LexNormSettingsBase(BaseModel):
-    task_type: Optional[TaskTypeEnum] = TaskTypeEnum.CONTENT_SUMMARY
+    task_type: Optional[Literal["content_summary", "content_mapping"]] = "content_summary"
     country: Optional[str] = "India"
     lexnorm_standard: Optional[str] = "NOS-National Occupational Standard"
     llm_model: Optional[str] = "gemini-2.5-pro"
@@ -66,7 +65,7 @@ class LexNormSettingsCreate(LexNormSettingsBase):
 
 
 class LexNormSettingsUpdate(BaseModel):
-    task_type: Optional[TaskTypeEnum] = None
+    task_type: Optional[Literal["content_summary", "content_mapping"]] = None
     country: Optional[str] = None
     lexnorm_standard: Optional[str] = None
     llm_model: Optional[str] = None
@@ -98,6 +97,7 @@ class ContentSummaryRequest(BaseModel):
 class ContentMappingRequest(BaseModel):
     content_id: int
     settings_id: Optional[int] = None
+    job_role_filter: Optional[str] = None
 
 
 class ContentMappingResponse(BaseModel):

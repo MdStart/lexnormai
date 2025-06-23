@@ -7,7 +7,8 @@ AI-powered course content tagging system that maps educational content to releva
 - **AI-Powered Content Analysis**: Uses Google Gemini AI to analyze and summarize course content
 - **Smart Mapping**: Maps course content to occupational standards (NOS, ISCO, SOC, etc.)
 - **Multi-Country Support**: Configure different countries and their specific occupational standards
-- **File Upload Support**: Supports text files, PDFs, and markdown documents
+- **Advanced File Upload Support**: Supports text files (.txt), PDFs (.pdf), Markdown (.md), and Word documents (.docx)
+- **Intelligent Text Extraction**: Automatic text extraction from PDF and DOCX files using PyPDF2 and python-docx
 - **Interactive Dashboard**: Modern web interface built with Next.js and Tailwind CSS
 - **Export Functionality**: Export mapping results to CSV format
 
@@ -26,6 +27,8 @@ AI-powered course content tagging system that maps educational content to releva
 - **SQLAlchemy** ORM with Alembic migrations
 - **Google Gemini API** for AI processing
 - **Pydantic** for data validation
+- **PyPDF2** for PDF text extraction
+- **python-docx** for Word document processing
 
 ## 📋 Prerequisites
 
@@ -56,7 +59,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 # Create environment file
-cp env.example .env
+cp .env.example .env
 
 # Edit .env with your configurations:
 # - DATABASE_URL: Your PostgreSQL connection string
@@ -93,10 +96,24 @@ alembic upgrade head
 #### Import Sample Data
 ```bash
 # Import sample occupational standards
-python scripts/import_standards.py
+python scripts/import_standards.py --file_path ../data/course_mapping_library.csv
+
+# Import from a custom CSV file (supports hierarchical format)
+python scripts/import_standards.py --file_path /path/to/your/custom.csv
+
+# Verify imported data
+python scripts/verify_import.py
 ```
 
-### 4. Frontend Setup
+**Note**: The import script supports both standard CSV format and hierarchical CSV format where Job Role, NOS Code, and NOS Name columns are only filled when they change (forward-filling is applied automatically).
+
+### 4. Test File Processing (Optional)
+```bash
+# Test PDF and DOCX extraction capabilities
+python scripts/test_pdf_extraction.py
+```
+
+### 5. Frontend Setup
 
 ```bash
 cd ../frontend
@@ -139,7 +156,12 @@ The frontend will be available at `http://localhost:3000`
 
 ### 2. Upload Course Content
 - Go to **Upload** page
-- Upload text files, PDFs, or enter content manually
+- Upload supported file types:
+  - **Text files** (.txt) - Plain text content
+  - **PDF files** (.pdf) - Automatic text extraction from all pages
+  - **Markdown files** (.md) - Structured text with formatting
+  - **Word documents** (.docx) - Text extraction from paragraphs and tables
+- Alternatively, enter content manually in the text area
 - Provide a descriptive title for your content
 
 ### 3. Generate AI Summaries
@@ -190,6 +212,7 @@ NEXT_PUBLIC_APP_VERSION=1.0.0
 - `scripts/create_tables.sql`: SQL script to create all required tables
 - `scripts/create_database.py`: Python script to create database and tables automatically
 - `scripts/import_standards.py`: Script to import occupational standards from CSV
+- `scripts/test_pdf_extraction.py`: Test script for file processing capabilities
 
 ## 🧪 API Documentation
 
@@ -197,7 +220,7 @@ Once the backend is running, visit `http://localhost:8000/docs` for interactive 
 
 ### Key Endpoints
 
-- `POST /api/v1/content/upload` - Upload course content files
+- `POST /api/v1/content/upload` - Upload course content files (supports .txt, .pdf, .md, .docx)
 - `POST /api/v1/content/{id}/generate-summary` - Generate AI summary
 - `POST /api/v1/mapping/map-content` - Map content to standards
 - `GET /api/v1/settings/` - Manage configuration settings

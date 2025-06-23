@@ -26,14 +26,17 @@ export default function UploadPage() {
   const [previewContent, setPreviewContent] = useState('');
 
   const handleFileSelect = async (file: File) => {
-    if (file.size > 504857600) { // 10MB limit
-      setUploadError('File size must be less than 10MB');
+    if (file.size > 504857600) { // 500MB limit
+      setUploadError('File size must be less than 500MB');
       return;
     }
 
-    const allowedTypes = ['text/plain', 'application/pdf', 'text/markdown'];
-    if (!allowedTypes.includes(file.type)) {
-      setUploadError('Only text (.txt), PDF (.pdf), and Markdown (.md) files are supported');
+    const allowedTypes = ['text/plain', 'application/pdf', 'text/markdown', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const allowedExtensions = ['.txt', '.pdf', '.md', '.docx'];
+    const fileExtension = file.name.toLowerCase().split('.').pop();
+    
+    if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(`.${fileExtension}`)) {
+      setUploadError('Only text (.txt), PDF (.pdf), Markdown (.md), and Word (.docx) files are supported');
       return;
     }
 
@@ -49,6 +52,8 @@ export default function UploadPage() {
       }
     } else if (file.type === 'application/pdf') {
       setPreviewContent('PDF content will be extracted during upload processing.');
+    } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || fileExtension === 'docx') {
+      setPreviewContent('Word document content will be extracted during upload processing.');
     }
   };
 
@@ -215,10 +220,10 @@ export default function UploadPage() {
                         <div>
                           <p className="font-medium">Drop your file here, or click to browse</p>
                           <p className="text-sm text-gray-500 mt-1">
-                            Supports: Text (.txt), PDF (.pdf), Markdown (.md)
+                            Supports: Text (.txt), PDF (.pdf), Markdown (.md), Word (.docx)
                           </p>
                           <p className="text-xs text-gray-400 mt-1">
-                            Maximum file size: 10MB
+                            Maximum file size: 500MB
                           </p>
                         </div>
                         <Button
@@ -235,7 +240,7 @@ export default function UploadPage() {
                     ref={fileInputRef}
                     type="file"
                     className="hidden"
-                    accept=".txt,.pdf,.md"
+                    accept=".txt,.pdf,.md,.docx"
                     onChange={handleFileInput}
                   />
                 </div>

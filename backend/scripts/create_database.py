@@ -43,7 +43,7 @@ def create_database():
             port=port,
             user=username,
             password=password,
-            database='lexnorm'  # Connect to default postgres database
+            database='postgres'  # Connect to default postgres database
         )
         admin_conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         admin_cursor = admin_conn.cursor()
@@ -81,7 +81,7 @@ def execute_sql_file():
             return False
         
         # Connect to the database
-        database_url = os.getenv("DATABASE_URL")
+        database_url = os.getenv("DATABASE_URL", "postgresql://mdmacpro:@localhost:5432/lexnorm")
         conn = psycopg2.connect(database_url)
         cursor = conn.cursor()
         

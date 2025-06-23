@@ -46,13 +46,22 @@ async def map_content_to_standards(
         if not settings:
             raise HTTPException(status_code=404, detail="Settings not found")
     
-    # Get all available standards from the database
-    standards = db.query(LexNormStandard).all()
-    if not standards:
-        raise HTTPException(
-            status_code=404, 
-            detail="No occupational standards found in database. Please import standards first."
+    # Get all available standards from the database, optionally filtered by job role
+    standards_query = db.query(LexNormStandard)
+    
+    # Apply job role filter if provided
+    if request.job_role_filter:
+        standards_query = standards_query.filter(
+            LexNormStandard.job_role.ilike(f"%{request.job_role_filter}%")
         )
+    
+    standards = standards_query.all()
+    if not standards:
+        error_msg = "No occupational standards found"
+        if request.job_role_filter:
+            error_msg += f" for job role '{request.job_role_filter}'"
+        error_msg += ". Please check your filter or import standards first."
+        raise HTTPException(status_code=404, detail=error_msg)
     
     try:
         # Use custom prompt if available in settings
@@ -142,6 +151,7 @@ async def get_unique_job_roles(db: Session = Depends(get_db)):
 async def batch_map_contents(
     content_ids: List[int],
     settings_id: Optional[int] = None,
+    job_role_filter: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
     """Batch map multiple course contents to standards."""
@@ -153,7 +163,8 @@ async def batch_map_contents(
         try:
             request = ContentMappingRequest(
                 content_id=content_id,
-                settings_id=settings_id
+                settings_id=settings_id,
+                job_role_filter=job_role_filter
             )
             result = await map_content_to_standards(request, db)
             results.append({

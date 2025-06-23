@@ -19,8 +19,10 @@ export default function MappingPage() {
 
   const [contents, setContents] = useState<CourseContent[]>([]);
   const [settings, setSettings] = useState<LexNormSettings[]>([]);
+  const [jobRoles, setJobRoles] = useState<{job_role: string}[]>([]);
   const [selectedContentId, setSelectedContentId] = useState<string>('');
   const [selectedSettingsId, setSelectedSettingsId] = useState<string>('');
+  const [selectedJobRoleFilter, setSelectedJobRoleFilter] = useState<string>('');
   const [isMapping, setIsMapping] = useState(false);
   const [mappingResults, setMappingResults] = useState<ContentMappingResponse | null>(null);
   const [mappingError, setMappingError] = useState<string | null>(null);
@@ -29,15 +31,17 @@ export default function MappingPage() {
   const loadData = useCallback(async () => {
     try {
       setIsLoading(true);
-      const [contentsResponse, settingsResponse] = await Promise.all([
+      const [contentsResponse, settingsResponse, jobRolesResponse] = await Promise.all([
         apiClient.content.getAll(),
-        apiClient.settings.getAll()
+        apiClient.settings.getAll(),
+        apiClient.mapping.getJobRoles()
       ]);
       
       // Filter to only content with summaries
       const contentsWithSummary = contentsResponse.data.filter(c => c.summary);
       setContents(contentsWithSummary);
       setSettings(settingsResponse.data);
+      setJobRoles(jobRolesResponse.data);
 
       // Set preselected content if provided
       if (preselectedContentId && contentsWithSummary.find(c => c.id.toString() === preselectedContentId)) {
@@ -67,7 +71,8 @@ export default function MappingPage() {
 
       const response = await apiClient.mapping.mapContent({
         content_id: parseInt(selectedContentId),
-        settings_id: selectedSettingsId ? parseInt(selectedSettingsId) : undefined
+        settings_id: selectedSettingsId ? parseInt(selectedSettingsId) : undefined,
+        job_role_filter: selectedJobRoleFilter || undefined
       });
 
       setMappingResults(response.data);
@@ -185,6 +190,27 @@ export default function MappingPage() {
                   </p>
                 </div>
 
+                {/* Job Role Filter */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Job Role Filter (Optional)</label>
+                  <Select value={selectedJobRoleFilter} onValueChange={setSelectedJobRoleFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by job role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Job Roles</SelectItem>
+                      {jobRoles.map((role, index) => (
+                        <SelectItem key={index} value={role.job_role}>
+                          {role.job_role}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-500">
+                    Filter mapping results to specific job roles only
+                  </p>
+                </div>
+
                 {/* Selected Content Preview */}
                 {selectedContent && (
                   <div className="space-y-2">
@@ -209,6 +235,31 @@ export default function MappingPage() {
                       </div>
                       <p className="text-xs text-gray-600">
                         {selectedSettings.lexnorm_standard} • {selectedSettings.llm_model}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Job Role Filter Preview */}
+                {selectedJobRoleFilter && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Active Job Role Filter</label>
+                    <div className="p-3 bg-purple-50 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <Badge variant="outline" className="text-purple-700 border-purple-300">
+                          {selectedJobRoleFilter}
+                        </Badge>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSelectedJobRoleFilter('')}
+                          className="h-6 px-2 text-xs text-purple-600 hover:text-purple-700"
+                        >
+                          Clear
+                        </Button>
+                      </div>
+                      <p className="text-xs text-purple-600 mt-1">
+                        Only standards for this job role will be considered
                       </p>
                     </div>
                   </div>
