@@ -9,8 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { apiClient, CourseContent, LexNormSettings, LexNormStandard, ContentMappingResponse, MappedStandardDetail } from '@/lib/api';
-import { Zap, FileText, Settings, Target, CheckCircle, AlertCircle, Eye, Download } from 'lucide-react';
+import { Zap, FileText, Settings, Target, CheckCircle, AlertCircle, Eye, Download, Filter, X, AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import jsPDF from 'jspdf';
 
 export default function MappingPage() {
   const router = useRouter();
@@ -113,48 +114,139 @@ export default function MappingPage() {
       a.click();
       window.URL.revokeObjectURL(url);
     } else if (format === 'pdf') {
-      // PDF export with ALL mapping data
-      const pdfContent = `CONTENT MAPPING RESULTS
-========================================
-
-Content: ${selectedContent?.title || 'Unknown'}
-Overall Confidence: ${mappingResults.overall_confidence_score?.toFixed(1) || 'N/A'}%
-Standards Found: ${mappingResults.mapped_standards.length}
-Generated: ${new Date().toLocaleString()}
-
-DETAILED MAPPING RESULTS
-========================================
-
-${mappingResults.mapped_standards.map((detail, index) => 
-`${index + 1}. ${detail.standard.job_role}
-----------------------------------------
-NOS Code: ${detail.standard.nos_code}
-NOS Name: ${detail.standard.nos_name}
-PC Code: ${detail.standard.pc_code}
-PC Description: ${detail.standard.pc_description}
-Confidence Score: ${detail.confidence_score}%
-Reasoning: ${detail.reasoning}
-Gap Analysis: ${detail.gap_analysis || 'N/A'}
-`
-).join('\n')}
-
-${mappingResults.overall_gap_analysis ? `
-OVERALL GAP ANALYSIS
-========================================
-${mappingResults.overall_gap_analysis}
-
-` : ''}
-CONTENT SUMMARY USED FOR MAPPING
-========================================
-${mappingResults.summary_used}`;
-
-      const blob = new Blob([pdfContent], { type: 'text/plain' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `mapping_results_${selectedContent?.title.replace(/[^a-z0-9]/gi, '_')}.txt`;
-      a.click();
-      window.URL.revokeObjectURL(url);
+      // PDF export with ALL mapping data using jsPDF
+      const doc = new jsPDF();
+      
+      // Set font and title
+      doc.setFontSize(16);
+      doc.text('CONTENT MAPPING RESULTS', 20, 20);
+      
+      // Draw a line under title
+      doc.setLineWidth(0.5);
+      doc.line(20, 25, 190, 25);
+      
+      let yPosition = 35;
+      
+      // Content information
+      doc.setFontSize(12);
+      doc.text(`Content: ${selectedContent?.title || 'Unknown'}`, 20, yPosition);
+      yPosition += 10;
+      doc.text(`Overall Confidence: ${mappingResults.overall_confidence_score?.toFixed(1) || 'N/A'}%`, 20, yPosition);
+      yPosition += 10;
+      doc.text(`Standards Found: ${mappingResults.mapped_standards.length}`, 20, yPosition);
+      yPosition += 10;
+      doc.text(`Generated: ${new Date().toLocaleString()}`, 20, yPosition);
+      yPosition += 20;
+      
+      // Detailed mapping results
+      doc.setFontSize(14);
+      doc.text('DETAILED MAPPING RESULTS', 20, yPosition);
+      doc.line(20, yPosition + 3, 120, yPosition + 3);
+      yPosition += 15;
+      
+      mappingResults.mapped_standards.forEach((detail, index) => {
+        // Check if we need a new page
+        if (yPosition > 250) {
+          doc.addPage();
+          yPosition = 20;
+        }
+        
+        doc.setFontSize(12);
+        doc.text(`${index + 1}. ${detail.standard.job_role}`, 20, yPosition);
+        yPosition += 8;
+        
+        doc.setFontSize(10);
+        doc.text(`NOS Code: ${detail.standard.nos_code}`, 25, yPosition);
+        yPosition += 6;
+        doc.text(`NOS Name: ${detail.standard.nos_name}`, 25, yPosition);
+        yPosition += 6;
+        doc.text(`PC Code: ${detail.standard.pc_code}`, 25, yPosition);
+        yPosition += 6;
+        
+        // Handle long PC descriptions
+        const pcDesc = detail.standard.pc_description;
+        const splitDesc = doc.splitTextToSize(pcDesc, 160);
+        doc.text(`PC Description: ${splitDesc[0]}`, 25, yPosition);
+        yPosition += 6;
+        if (splitDesc.length > 1) {
+          for (let i = 1; i < splitDesc.length; i++) {
+            doc.text(splitDesc[i], 25, yPosition);
+            yPosition += 6;
+          }
+        }
+        
+        doc.text(`Confidence Score: ${detail.confidence_score}%`, 25, yPosition);
+        yPosition += 6;
+        
+        // Handle long reasoning text
+        const reasoning = detail.reasoning;
+        const splitReasoning = doc.splitTextToSize(`Reasoning: ${reasoning}`, 160);
+        for (let i = 0; i < splitReasoning.length; i++) {
+          doc.text(splitReasoning[i], 25, yPosition);
+          yPosition += 6;
+        }
+        
+        if (detail.gap_analysis) {
+          const gapAnalysis = detail.gap_analysis;
+          const splitGap = doc.splitTextToSize(`Gap Analysis: ${gapAnalysis}`, 160);
+          for (let i = 0; i < splitGap.length; i++) {
+            doc.text(splitGap[i], 25, yPosition);
+            yPosition += 6;
+          }
+        }
+        
+        yPosition += 5; // Space between entries
+      });
+      
+      // Overall gap analysis
+      if (mappingResults.overall_gap_analysis) {
+        if (yPosition > 200) {
+          doc.addPage();
+          yPosition = 20;
+        }
+        
+        doc.setFontSize(14);
+        doc.text('OVERALL GAP ANALYSIS', 20, yPosition);
+        doc.line(20, yPosition + 3, 110, yPosition + 3);
+        yPosition += 15;
+        
+        doc.setFontSize(10);
+        const splitOverallGap = doc.splitTextToSize(mappingResults.overall_gap_analysis, 160);
+        for (let i = 0; i < splitOverallGap.length; i++) {
+          if (yPosition > 280) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          doc.text(splitOverallGap[i], 20, yPosition);
+          yPosition += 6;
+        }
+        yPosition += 10;
+      }
+      
+      // Content summary
+      if (yPosition > 200) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      doc.setFontSize(14);
+      doc.text('CONTENT SUMMARY USED FOR MAPPING', 20, yPosition);
+      doc.line(20, yPosition + 3, 140, yPosition + 3);
+      yPosition += 15;
+      
+      doc.setFontSize(10);
+      const splitSummary = doc.splitTextToSize(mappingResults.summary_used, 160);
+      for (let i = 0; i < splitSummary.length; i++) {
+        if (yPosition > 280) {
+          doc.addPage();
+          yPosition = 20;
+        }
+        doc.text(splitSummary[i], 20, yPosition);
+        yPosition += 6;
+      }
+      
+      // Save the PDF
+      doc.save(`mapping_results_${selectedContent?.title.replace(/[^a-z0-9]/gi, '_')}.pdf`);
     }
   };
 
