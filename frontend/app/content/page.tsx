@@ -221,28 +221,6 @@ export default function ContentPage() {
         yPosition += 10;
       }
       
-      // Content summary
-      if (yPosition > 200) {
-        doc.addPage();
-        yPosition = 20;
-      }
-      
-      doc.setFontSize(14);
-      doc.text('CONTENT SUMMARY USED FOR MAPPING', 20, yPosition);
-      doc.line(20, yPosition + 3, 140, yPosition + 3);
-      yPosition += 15;
-      
-      doc.setFontSize(10);
-      const splitSummary = doc.splitTextToSize(mappingData.summary_used, 160);
-      for (let i = 0; i < splitSummary.length; i++) {
-        if (yPosition > 280) {
-          doc.addPage();
-          yPosition = 20;
-        }
-        doc.text(splitSummary[i], 20, yPosition);
-        yPosition += 6;
-      }
-      
       // Save the PDF
       doc.save(`mapping_results_${content.title.replace(/[^a-z0-9]/gi, '_')}.pdf`);
     }
