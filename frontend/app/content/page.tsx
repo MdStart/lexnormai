@@ -351,197 +351,202 @@ ${mappingData.summary_used}`;
                                   <Eye className="w-4 h-4" />
                                 </Button>
                               </DialogTrigger>
-                              <DialogContent className="max-w-7xl w-[95vw] max-h-[90vh] overflow-y-auto">
-                                <DialogHeader>
-                                  <DialogTitle className="text-xl">{selectedContent?.title}</DialogTitle>
-                                  <DialogDescription>
+                              <DialogContent className="w-[95vw] h-[85vh] max-w-none max-h-none sm:max-w-none md:max-w-none lg:max-w-none xl:max-w-none overflow-hidden flex flex-col m-2">
+                                <DialogHeader className="flex-shrink-0 pb-4 border-b">
+                                  <DialogTitle className="text-xl font-bold">{selectedContent?.title}</DialogTitle>
+                                  <DialogDescription className="text-sm text-gray-600">
                                     Content details, AI summary, and mapping analysis results
                                   </DialogDescription>
                                 </DialogHeader>
-                                {selectedContent && (
-                                  <div className="space-y-6">
-                                    <div>
-                                      <h4 className="font-semibold mb-2">Original Content</h4>
-                                      <div className="bg-gray-50 p-4 rounded-lg max-h-60 overflow-y-auto">
-                                        <div className="whitespace-pre-wrap text-sm break-words">
-                                          {selectedContent.content}
-                                        </div>
-                                      </div>
-                                    </div>
-                                    
-                                    {selectedContent.summary && (
-                                      <div>
-                                        <h4 className="font-semibold mb-2">AI Summary</h4>
-                                        <div className="bg-blue-50 p-4 rounded-lg">
-                                          <div className="whitespace-pre-wrap text-sm break-words">
-                                            {selectedContent.summary}
+                                <div className="flex-1 overflow-y-auto py-4">
+                                  {selectedContent && (
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+                                      {/* Left Column - Content & Summary */}
+                                      <div className="space-y-4">
+                                        <div>
+                                          <h4 className="font-semibold mb-2">Original Content</h4>
+                                          <div className="bg-gray-50 p-4 rounded-lg h-48 overflow-y-auto">
+                                            <div className="whitespace-pre-wrap text-sm break-words leading-relaxed">
+                                              {selectedContent.content}
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    )}
-                                    
-                                    {/* Mapping Results Section */}
-                                    {selectedContent.summary && (
-                                      <div>
-                                        <div className="flex items-center justify-between mb-2">
-                                          <h4 className="font-semibold">Mapping Results</h4>
-                                          {!mappingResults[selectedContent.id] && (
-                                            <Button
-                                              size="sm"
-                                              onClick={() => loadMappingResults(selectedContent.id)}
-                                              disabled={loadingMappingResults[selectedContent.id]}
-                                              className="flex items-center gap-2"
-                                            >
-                                              {loadingMappingResults[selectedContent.id] ? (
-                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                              ) : (
-                                                <Target className="w-4 h-4" />
-                                              )}
-                                              Load Mapping Results
-                                            </Button>
-                                          )}
-                                        </div>
                                         
-                                        {loadingMappingResults[selectedContent.id] && (
-                                          <div className="bg-gray-50 p-4 rounded-lg text-center">
-                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
-                                            <p className="text-sm text-gray-600">Loading mapping results...</p>
+                                        {selectedContent.summary && (
+                                          <div>
+                                            <h4 className="font-semibold mb-2">AI Summary</h4>
+                                            <div className="bg-blue-50 p-4 rounded-lg h-32 overflow-y-auto">
+                                              <div className="whitespace-pre-wrap text-sm break-words leading-relaxed">
+                                                {selectedContent.summary}
+                                              </div>
+                                            </div>
                                           </div>
                                         )}
                                         
-                                        {mappingResults[selectedContent.id] && mappingResults[selectedContent.id].length > 0 ? (
-                                          <div className="space-y-4">
-                                            {mappingResults[selectedContent.id].map((result, index) => (
-                                              <div key={result.id} className="border rounded-lg p-4 bg-purple-50">
-                                                <div className="flex items-center justify-between mb-3">
-                                                  <div className="flex items-center gap-2">
-                                                    <Badge variant="outline">
-                                                      Result #{index + 1}
-                                                    </Badge>
-                                                    <Badge variant="secondary">
-                                                      {result.standards_count} Standards
-                                                    </Badge>
-                                                    {result.overall_confidence_score && (
-                                                      <Badge variant="outline" className="text-green-700 border-green-300">
-                                                        {result.overall_confidence_score}% Confidence
-                                                      </Badge>
-                                                    )}
-                                                    {result.job_role_filter && (
-                                                      <Badge variant="outline" className="text-purple-700 border-purple-300">
-                                                        {result.job_role_filter}
-                                                      </Badge>
-                                                    )}
-                                                  </div>
-                                                  <div className="flex gap-1">
-                                                    <Button
-                                                      size="sm"
-                                                      variant="outline"
-                                                      onClick={() => exportMappingResults(selectedContent, result, 'csv')}
-                                                      title="Export CSV"
-                                                      className="h-7 px-2 text-xs"
-                                                    >
-                                                      <Download className="w-3 h-3 mr-1" />
-                                                      CSV
-                                                    </Button>
-                                                    <Button
-                                                      size="sm"
-                                                      variant="outline"
-                                                      onClick={() => exportMappingResults(selectedContent, result, 'pdf')}
-                                                      title="Export PDF"
-                                                      className="h-7 px-2 text-xs"
-                                                    >
-                                                      <Download className="w-3 h-3 mr-1" />
-                                                      PDF
-                                                    </Button>
-                                                  </div>
-                                                </div>
-                                                
-                                                <div className="text-xs text-gray-500 mb-3">
-                                                  Generated: {new Date(result.created_at).toLocaleString()}
-                                                </div>
-                                                
-                                                <div className="max-h-60 overflow-y-auto">
-                                                  <Table>
-                                                    <TableHeader>
-                                                      <TableRow>
-                                                        <TableHead className="text-xs w-32">Job Role</TableHead>
-                                                        <TableHead className="text-xs w-24">NOS Code</TableHead>
-                                                        <TableHead className="text-xs w-24">PC Code</TableHead>
-                                                        <TableHead className="text-xs w-20">Confidence</TableHead>
-                                                        <TableHead className="text-xs">Reasoning</TableHead>
-                                                      </TableRow>
-                                                    </TableHeader>
-                                                    <TableBody>
-                                                      {result.mapping_data.mapped_standards.map((detail, detailIndex) => (
-                                                        <TableRow key={detailIndex}>
-                                                          <TableCell className="text-xs font-medium w-32">
-                                                            <div className="break-words">
-                                                              {detail.standard.job_role}
-                                                            </div>
-                                                          </TableCell>
-                                                          <TableCell className="text-xs w-24">
-                                                            <Badge variant="outline" className="text-xs">
-                                                              {detail.standard.nos_code}
-                                                            </Badge>
-                                                          </TableCell>
-                                                          <TableCell className="text-xs w-24">
-                                                            <Badge variant="secondary" className="text-xs">
-                                                              {detail.standard.pc_code}
-                                                            </Badge>
-                                                          </TableCell>
-                                                          <TableCell className="text-xs w-20">
-                                                            <Badge variant="outline" className="text-green-700 border-green-300 text-xs">
-                                                              {detail.confidence_score}%
-                                                            </Badge>
-                                                          </TableCell>
-                                                          <TableCell className="text-xs">
-                                                            <div className="break-words max-w-md" title={detail.reasoning}>
-                                                              {detail.reasoning.length > 100
-                                                                ? detail.reasoning.substring(0, 100) + '...'
-                                                                : detail.reasoning}
-                                                            </div>
-                                                          </TableCell>
-                                                        </TableRow>
-                                                      ))}
-                                                    </TableBody>
-                                                  </Table>
-                                                </div>
-                                              </div>
-                                            ))}
-                                          </div>
-                                        ) : mappingResults[selectedContent.id] && mappingResults[selectedContent.id].length === 0 ? (
-                                          <div className="bg-gray-50 p-4 rounded-lg text-center">
-                                            <Target className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                                            <p className="text-sm text-gray-600">No mapping results found for this content.</p>
-                                          </div>
-                                        ) : null}
-                                      </div>
-                                    )}
-                                    
-                                    <div className="flex gap-2">
-                                      {!selectedContent.summary && (
-                                        <Button
-                                          onClick={() => handleGenerateSummary(selectedContent.id)}
-                                          disabled={isGeneratingSummary === selectedContent.id}
-                                          className="flex items-center gap-2"
-                                        >
-                                          {isGeneratingSummary === selectedContent.id ? (
-                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                          ) : (
-                                            <Zap className="w-4 h-4" />
+                                        <div className="flex gap-2">
+                                          {!selectedContent.summary && (
+                                            <Button
+                                              onClick={() => handleGenerateSummary(selectedContent.id)}
+                                              disabled={isGeneratingSummary === selectedContent.id}
+                                              className="flex items-center gap-2"
+                                            >
+                                              {isGeneratingSummary === selectedContent.id ? (
+                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                              ) : (
+                                                <Zap className="w-4 h-4" />
+                                              )}
+                                              Generate Summary
+                                            </Button>
                                           )}
-                                          Generate Summary
-                                        </Button>
-                                      )}
-                                      <Button
-                                        variant="outline"
-                                        onClick={() => router.push(`/mapping?content=${selectedContent.id}`)}
-                                      >
-                                        Map to Standards
-                                      </Button>
+                                          <Button
+                                            variant="outline"
+                                            onClick={() => router.push(`/mapping?content=${selectedContent.id}`)}
+                                          >
+                                            Map to Standards
+                                          </Button>
+                                        </div>
+                                      </div>
+                                      
+                                      {/* Right Column - Mapping Results */}
+                                      <div className="space-y-4">
+                                        {selectedContent.summary && (
+                                          <div>
+                                            <div className="flex items-center justify-between mb-2">
+                                              <h4 className="font-semibold">Mapping Results</h4>
+                                              {!mappingResults[selectedContent.id] && (
+                                                <Button
+                                                  size="sm"
+                                                  onClick={() => loadMappingResults(selectedContent.id)}
+                                                  disabled={loadingMappingResults[selectedContent.id]}
+                                                  className="flex items-center gap-2"
+                                                >
+                                                  {loadingMappingResults[selectedContent.id] ? (
+                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                                  ) : (
+                                                    <Target className="w-4 h-4" />
+                                                  )}
+                                                  Load Mapping Results
+                                                </Button>
+                                              )}
+                                            </div>
+                                            
+                                            {loadingMappingResults[selectedContent.id] && (
+                                              <div className="bg-gray-50 p-4 rounded-lg text-center">
+                                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
+                                                <p className="text-sm text-gray-600">Loading mapping results...</p>
+                                              </div>
+                                            )}
+                                            
+                                            {mappingResults[selectedContent.id] && mappingResults[selectedContent.id].length > 0 ? (
+                                              <div className="space-y-4">
+                                                {mappingResults[selectedContent.id].map((result, index) => (
+                                                  <div key={result.id} className="border rounded-lg p-4 bg-purple-50">
+                                                    <div className="flex items-center justify-between mb-3">
+                                                      <div className="flex items-center gap-2">
+                                                        <Badge variant="outline">
+                                                          Result #{index + 1}
+                                                        </Badge>
+                                                        <Badge variant="secondary">
+                                                          {result.standards_count} Standards
+                                                        </Badge>
+                                                        {result.overall_confidence_score && (
+                                                          <Badge variant="outline" className="text-green-700 border-green-300">
+                                                            {result.overall_confidence_score}% Confidence
+                                                          </Badge>
+                                                        )}
+                                                        {result.job_role_filter && (
+                                                          <Badge variant="outline" className="text-purple-700 border-purple-300">
+                                                            {result.job_role_filter}
+                                                          </Badge>
+                                                        )}
+                                                      </div>
+                                                      <div className="flex gap-1">
+                                                        <Button
+                                                          size="sm"
+                                                          variant="outline"
+                                                          onClick={() => exportMappingResults(selectedContent, result, 'csv')}
+                                                          title="Export CSV"
+                                                          className="h-7 px-2 text-xs"
+                                                        >
+                                                          <Download className="w-3 h-3 mr-1" />
+                                                          CSV
+                                                        </Button>
+                                                        <Button
+                                                          size="sm"
+                                                          variant="outline"
+                                                          onClick={() => exportMappingResults(selectedContent, result, 'pdf')}
+                                                          title="Export PDF"
+                                                          className="h-7 px-2 text-xs"
+                                                        >
+                                                          <Download className="w-3 h-3 mr-1" />
+                                                          PDF
+                                                        </Button>
+                                                      </div>
+                                                    </div>
+                                                    
+                                                    <div className="text-xs text-gray-500 mb-3">
+                                                      Generated: {new Date(result.created_at).toLocaleString()}
+                                                    </div>
+                                                    
+                                                    <div className="max-h-80 overflow-y-auto border rounded-lg">
+                                                      <Table>
+                                                        <TableHeader>
+                                                          <TableRow>
+                                                            <TableHead className="text-sm w-32">Job Role</TableHead>
+                                                            <TableHead className="text-sm w-28">NOS Code</TableHead>
+                                                            <TableHead className="text-sm w-24">PC Code</TableHead>
+                                                            <TableHead className="text-sm w-24">Confidence</TableHead>
+                                                            <TableHead className="text-sm">Reasoning</TableHead>
+                                                          </TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                          {result.mapping_data.mapped_standards.map((detail, detailIndex) => (
+                                                            <TableRow key={detailIndex}>
+                                                              <TableCell className="text-sm font-medium w-32">
+                                                                <div className="break-words leading-normal">
+                                                                  {detail.standard.job_role}
+                                                                </div>
+                                                              </TableCell>
+                                                              <TableCell className="text-sm w-28">
+                                                                <Badge variant="outline" className="text-sm whitespace-nowrap">
+                                                                  {detail.standard.nos_code}
+                                                                </Badge>
+                                                              </TableCell>
+                                                              <TableCell className="text-sm w-24">
+                                                                <Badge variant="secondary" className="text-sm whitespace-nowrap">
+                                                                  {detail.standard.pc_code}
+                                                                </Badge>
+                                                              </TableCell>
+                                                              <TableCell className="text-sm w-24">
+                                                                <Badge variant="outline" className="text-green-700 border-green-300 text-sm whitespace-nowrap">
+                                                                  {detail.confidence_score}%
+                                                                </Badge>
+                                                              </TableCell>
+                                                              <TableCell className="text-sm">
+                                                                <div className="break-words leading-normal" title={detail.reasoning}>
+                                                                  {detail.reasoning}
+                                                                </div>
+                                                              </TableCell>
+                                                            </TableRow>
+                                                          ))}
+                                                        </TableBody>
+                                                      </Table>
+                                                    </div>
+                                                  </div>
+                                                ))}
+                                              </div>
+                                            ) : mappingResults[selectedContent.id] && mappingResults[selectedContent.id].length === 0 ? (
+                                              <div className="bg-gray-50 p-4 rounded-lg text-center">
+                                                <Target className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                                                <p className="text-sm text-gray-600">No mapping results found for this content.</p>
+                                              </div>
+                                            ) : null}
+                                          </div>
+                                        )}
+                                      </div>
                                     </div>
-                                  </div>
-                                )}
+                                  )}
+                                </div>
                               </DialogContent>
                             </Dialog>
 
