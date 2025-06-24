@@ -266,12 +266,12 @@ ${mappingData.summary_used}`;
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Content Preview</TableHead>
-                      <TableHead>Summary Status</TableHead>
-                      <TableHead>Mapping Results</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead className="w-48">Title</TableHead>
+                      <TableHead className="w-96">Content Preview</TableHead>
+                      <TableHead className="w-32">Summary Status</TableHead>
+                      <TableHead className="w-32">Mapping Results</TableHead>
+                      <TableHead className="w-40">Created</TableHead>
+                      <TableHead className="w-32">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -283,8 +283,8 @@ ${mappingData.summary_used}`;
                           </div>
                         </TableCell>
                         <TableCell className="max-w-md">
-                          <div className="text-sm text-gray-600">
-                            {truncateText(content.content, 150)}
+                          <div className="text-sm text-gray-600 line-clamp-2">
+                            {truncateText(content.content, 100)}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -330,7 +330,7 @@ ${mappingData.summary_used}`;
                         <TableCell className="text-sm text-gray-500">
                           <div className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
-                            {formatDate(content.created_at)}
+                            <span className="whitespace-nowrap">{formatDate(content.created_at)}</span>
                           </div>
                         </TableCell>
                         <TableCell>
@@ -351,11 +351,11 @@ ${mappingData.summary_used}`;
                                   <Eye className="w-4 h-4" />
                                 </Button>
                               </DialogTrigger>
-                              <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                              <DialogContent className="max-w-7xl w-[95vw] max-h-[90vh] overflow-y-auto">
                                 <DialogHeader>
-                                  <DialogTitle>{selectedContent?.title}</DialogTitle>
+                                  <DialogTitle className="text-xl">{selectedContent?.title}</DialogTitle>
                                   <DialogDescription>
-                                    Content details and analysis information
+                                    Content details, AI summary, and mapping analysis results
                                   </DialogDescription>
                                 </DialogHeader>
                                 {selectedContent && (
@@ -363,9 +363,9 @@ ${mappingData.summary_used}`;
                                     <div>
                                       <h4 className="font-semibold mb-2">Original Content</h4>
                                       <div className="bg-gray-50 p-4 rounded-lg max-h-60 overflow-y-auto">
-                                        <pre className="whitespace-pre-wrap text-sm">
+                                        <div className="whitespace-pre-wrap text-sm break-words">
                                           {selectedContent.content}
-                                        </pre>
+                                        </div>
                                       </div>
                                     </div>
                                     
@@ -373,9 +373,9 @@ ${mappingData.summary_used}`;
                                       <div>
                                         <h4 className="font-semibold mb-2">AI Summary</h4>
                                         <div className="bg-blue-50 p-4 rounded-lg">
-                                          <pre className="whitespace-pre-wrap text-sm">
+                                          <div className="whitespace-pre-wrap text-sm break-words">
                                             {selectedContent.summary}
-                                          </pre>
+                                          </div>
                                         </div>
                                       </div>
                                     )}
@@ -438,8 +438,9 @@ ${mappingData.summary_used}`;
                                                       variant="outline"
                                                       onClick={() => exportMappingResults(selectedContent, result, 'csv')}
                                                       title="Export CSV"
+                                                      className="h-7 px-2 text-xs"
                                                     >
-                                                      <Download className="w-3 h-3" />
+                                                      <Download className="w-3 h-3 mr-1" />
                                                       CSV
                                                     </Button>
                                                     <Button
@@ -447,8 +448,9 @@ ${mappingData.summary_used}`;
                                                       variant="outline"
                                                       onClick={() => exportMappingResults(selectedContent, result, 'pdf')}
                                                       title="Export PDF"
+                                                      className="h-7 px-2 text-xs"
                                                     >
-                                                      <Download className="w-3 h-3" />
+                                                      <Download className="w-3 h-3 mr-1" />
                                                       PDF
                                                     </Button>
                                                   </div>
@@ -462,38 +464,40 @@ ${mappingData.summary_used}`;
                                                   <Table>
                                                     <TableHeader>
                                                       <TableRow>
-                                                        <TableHead className="text-xs">Job Role</TableHead>
-                                                        <TableHead className="text-xs">NOS Code</TableHead>
-                                                        <TableHead className="text-xs">PC Code</TableHead>
-                                                        <TableHead className="text-xs">Confidence</TableHead>
+                                                        <TableHead className="text-xs w-32">Job Role</TableHead>
+                                                        <TableHead className="text-xs w-24">NOS Code</TableHead>
+                                                        <TableHead className="text-xs w-24">PC Code</TableHead>
+                                                        <TableHead className="text-xs w-20">Confidence</TableHead>
                                                         <TableHead className="text-xs">Reasoning</TableHead>
                                                       </TableRow>
                                                     </TableHeader>
                                                     <TableBody>
                                                       {result.mapping_data.mapped_standards.map((detail, detailIndex) => (
                                                         <TableRow key={detailIndex}>
-                                                          <TableCell className="text-xs font-medium">
-                                                            {detail.standard.job_role}
+                                                          <TableCell className="text-xs font-medium w-32">
+                                                            <div className="break-words">
+                                                              {detail.standard.job_role}
+                                                            </div>
                                                           </TableCell>
-                                                          <TableCell className="text-xs">
+                                                          <TableCell className="text-xs w-24">
                                                             <Badge variant="outline" className="text-xs">
                                                               {detail.standard.nos_code}
                                                             </Badge>
                                                           </TableCell>
-                                                          <TableCell className="text-xs">
+                                                          <TableCell className="text-xs w-24">
                                                             <Badge variant="secondary" className="text-xs">
                                                               {detail.standard.pc_code}
                                                             </Badge>
                                                           </TableCell>
-                                                          <TableCell className="text-xs">
+                                                          <TableCell className="text-xs w-20">
                                                             <Badge variant="outline" className="text-green-700 border-green-300 text-xs">
                                                               {detail.confidence_score}%
                                                             </Badge>
                                                           </TableCell>
-                                                          <TableCell className="text-xs max-w-xs">
-                                                            <div className="truncate" title={detail.reasoning}>
-                                                              {detail.reasoning.length > 50
-                                                                ? detail.reasoning.substring(0, 50) + '...'
+                                                          <TableCell className="text-xs">
+                                                            <div className="break-words max-w-md" title={detail.reasoning}>
+                                                              {detail.reasoning.length > 100
+                                                                ? detail.reasoning.substring(0, 100) + '...'
                                                                 : detail.reasoning}
                                                             </div>
                                                           </TableCell>
