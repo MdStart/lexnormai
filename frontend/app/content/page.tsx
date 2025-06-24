@@ -7,8 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { apiClient, CourseContent } from '@/lib/api';
-import { FileText, Search, Eye, Zap, Trash2, Plus, Calendar, AlertCircle } from 'lucide-react';
+import { apiClient, CourseContent, MappingResult } from '@/lib/api';
+import { FileText, Search, Eye, Zap, Trash2, Plus, Calendar, AlertCircle, Download, Target } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function ContentPage() {
@@ -19,6 +19,8 @@ export default function ContentPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedContent, setSelectedContent] = useState<CourseContent | null>(null);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState<number | null>(null);
+  const [mappingResults, setMappingResults] = useState<Record<number, MappingResult[]>>({});
+  const [loadingMappingResults, setLoadingMappingResults] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     loadContents();
@@ -65,6 +67,91 @@ export default function ContentPage() {
       } catch (error) {
         console.error('Error deleting content:', error);
       }
+    }
+  };
+
+  const loadMappingResults = async (contentId: number) => {
+    try {
+      setLoadingMappingResults(prev => ({ ...prev, [contentId]: true }));
+      const response = await apiClient.mapping.getResults(0, 100, contentId);
+      setMappingResults(prev => ({ ...prev, [contentId]: response.data }));
+    } catch (error) {
+      console.error('Error loading mapping results:', error);
+    } finally {
+      setLoadingMappingResults(prev => ({ ...prev, [contentId]: false }));
+    }
+  };
+
+  const exportMappingResults = (content: CourseContent, mappingResult: MappingResult, format: string) => {
+    const mappingData = mappingResult.mapping_data;
+    
+    if (format === 'csv') {
+      // CSV export with PC code level data
+      const csvContent = [
+        ['Job Role', 'NOS Code', 'NOS Name', 'PC Code', 'PC Description', 'Confidence Score', 'Reasoning', 'Gap Analysis'],
+        ...mappingData.mapped_standards.map(detail => [
+          detail.standard.job_role,
+          detail.standard.nos_code,
+          detail.standard.nos_name,
+          detail.standard.pc_code,
+          detail.standard.pc_description,
+          detail.confidence_score.toString(),
+          detail.reasoning,
+          detail.gap_analysis || ''
+        ])
+      ].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mapping_results_${content.title.replace(/[^a-z0-9]/gi, '_')}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } else if (format === 'pdf') {
+      // PDF export with ALL mapping data
+      const pdfContent = `CONTENT MAPPING RESULTS
+========================================
+
+Content: ${content.title}
+Overall Confidence: ${mappingData.overall_confidence_score?.toFixed(1) || 'N/A'}%
+Standards Found: ${mappingData.mapped_standards.length}
+Generated: ${new Date(mappingResult.created_at).toLocaleString()}
+Job Role Filter: ${mappingResult.job_role_filter || 'None'}
+
+DETAILED MAPPING RESULTS
+========================================
+
+${mappingData.mapped_standards.map((detail, index) => 
+`${index + 1}. ${detail.standard.job_role}
+----------------------------------------
+NOS Code: ${detail.standard.nos_code}
+NOS Name: ${detail.standard.nos_name}
+PC Code: ${detail.standard.pc_code}
+PC Description: ${detail.standard.pc_description}
+Confidence Score: ${detail.confidence_score}%
+Reasoning: ${detail.reasoning}
+Gap Analysis: ${detail.gap_analysis || 'N/A'}
+`
+).join('\n')}
+
+${mappingData.overall_gap_analysis ? `
+OVERALL GAP ANALYSIS
+========================================
+${mappingData.overall_gap_analysis}
+
+` : ''}
+CONTENT SUMMARY USED FOR MAPPING
+========================================
+${mappingData.summary_used}`;
+
+      const blob = new Blob([pdfContent], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mapping_results_${content.title.replace(/[^a-z0-9]/gi, '_')}.txt`;
+      a.click();
+      window.URL.revokeObjectURL(url);
     }
   };
 
@@ -182,6 +269,7 @@ export default function ContentPage() {
                       <TableHead>Title</TableHead>
                       <TableHead>Content Preview</TableHead>
                       <TableHead>Summary Status</TableHead>
+                      <TableHead>Mapping Results</TableHead>
                       <TableHead>Created</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
@@ -210,6 +298,35 @@ export default function ContentPage() {
                             </Badge>
                           )}
                         </TableCell>
+                        <TableCell>
+                          {content.summary ? (
+                            <div className="flex items-center gap-2">
+                              {mappingResults[content.id] && mappingResults[content.id].length > 0 ? (
+                                <Badge variant="default" className="bg-purple-100 text-purple-800">
+                                  {mappingResults[content.id].length} Results
+                                </Badge>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => loadMappingResults(content.id)}
+                                  disabled={loadingMappingResults[content.id]}
+                                  title="Load Mapping Results"
+                                >
+                                  {loadingMappingResults[content.id] ? (
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+                                  ) : (
+                                    <Target className="w-4 h-4" />
+                                  )}
+                                </Button>
+                              )}
+                            </div>
+                          ) : (
+                            <Badge variant="outline">
+                              No Summary
+                            </Badge>
+                          )}
+                        </TableCell>
                         <TableCell className="text-sm text-gray-500">
                           <div className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
@@ -224,7 +341,12 @@ export default function ContentPage() {
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  onClick={() => setSelectedContent(content)}
+                                  onClick={() => {
+                                    setSelectedContent(content);
+                                    if (content.summary && !mappingResults[content.id]) {
+                                      loadMappingResults(content.id);
+                                    }
+                                  }}
                                 >
                                   <Eye className="w-4 h-4" />
                                 </Button>
@@ -255,6 +377,140 @@ export default function ContentPage() {
                                             {selectedContent.summary}
                                           </pre>
                                         </div>
+                                      </div>
+                                    )}
+                                    
+                                    {/* Mapping Results Section */}
+                                    {selectedContent.summary && (
+                                      <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                          <h4 className="font-semibold">Mapping Results</h4>
+                                          {!mappingResults[selectedContent.id] && (
+                                            <Button
+                                              size="sm"
+                                              onClick={() => loadMappingResults(selectedContent.id)}
+                                              disabled={loadingMappingResults[selectedContent.id]}
+                                              className="flex items-center gap-2"
+                                            >
+                                              {loadingMappingResults[selectedContent.id] ? (
+                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                              ) : (
+                                                <Target className="w-4 h-4" />
+                                              )}
+                                              Load Mapping Results
+                                            </Button>
+                                          )}
+                                        </div>
+                                        
+                                        {loadingMappingResults[selectedContent.id] && (
+                                          <div className="bg-gray-50 p-4 rounded-lg text-center">
+                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
+                                            <p className="text-sm text-gray-600">Loading mapping results...</p>
+                                          </div>
+                                        )}
+                                        
+                                        {mappingResults[selectedContent.id] && mappingResults[selectedContent.id].length > 0 ? (
+                                          <div className="space-y-4">
+                                            {mappingResults[selectedContent.id].map((result, index) => (
+                                              <div key={result.id} className="border rounded-lg p-4 bg-purple-50">
+                                                <div className="flex items-center justify-between mb-3">
+                                                  <div className="flex items-center gap-2">
+                                                    <Badge variant="outline">
+                                                      Result #{index + 1}
+                                                    </Badge>
+                                                    <Badge variant="secondary">
+                                                      {result.standards_count} Standards
+                                                    </Badge>
+                                                    {result.overall_confidence_score && (
+                                                      <Badge variant="outline" className="text-green-700 border-green-300">
+                                                        {result.overall_confidence_score}% Confidence
+                                                      </Badge>
+                                                    )}
+                                                    {result.job_role_filter && (
+                                                      <Badge variant="outline" className="text-purple-700 border-purple-300">
+                                                        {result.job_role_filter}
+                                                      </Badge>
+                                                    )}
+                                                  </div>
+                                                  <div className="flex gap-1">
+                                                    <Button
+                                                      size="sm"
+                                                      variant="outline"
+                                                      onClick={() => exportMappingResults(selectedContent, result, 'csv')}
+                                                      title="Export CSV"
+                                                    >
+                                                      <Download className="w-3 h-3" />
+                                                      CSV
+                                                    </Button>
+                                                    <Button
+                                                      size="sm"
+                                                      variant="outline"
+                                                      onClick={() => exportMappingResults(selectedContent, result, 'pdf')}
+                                                      title="Export PDF"
+                                                    >
+                                                      <Download className="w-3 h-3" />
+                                                      PDF
+                                                    </Button>
+                                                  </div>
+                                                </div>
+                                                
+                                                <div className="text-xs text-gray-500 mb-3">
+                                                  Generated: {new Date(result.created_at).toLocaleString()}
+                                                </div>
+                                                
+                                                <div className="max-h-60 overflow-y-auto">
+                                                  <Table>
+                                                    <TableHeader>
+                                                      <TableRow>
+                                                        <TableHead className="text-xs">Job Role</TableHead>
+                                                        <TableHead className="text-xs">NOS Code</TableHead>
+                                                        <TableHead className="text-xs">PC Code</TableHead>
+                                                        <TableHead className="text-xs">Confidence</TableHead>
+                                                        <TableHead className="text-xs">Reasoning</TableHead>
+                                                      </TableRow>
+                                                    </TableHeader>
+                                                    <TableBody>
+                                                      {result.mapping_data.mapped_standards.map((detail, detailIndex) => (
+                                                        <TableRow key={detailIndex}>
+                                                          <TableCell className="text-xs font-medium">
+                                                            {detail.standard.job_role}
+                                                          </TableCell>
+                                                          <TableCell className="text-xs">
+                                                            <Badge variant="outline" className="text-xs">
+                                                              {detail.standard.nos_code}
+                                                            </Badge>
+                                                          </TableCell>
+                                                          <TableCell className="text-xs">
+                                                            <Badge variant="secondary" className="text-xs">
+                                                              {detail.standard.pc_code}
+                                                            </Badge>
+                                                          </TableCell>
+                                                          <TableCell className="text-xs">
+                                                            <Badge variant="outline" className="text-green-700 border-green-300 text-xs">
+                                                              {detail.confidence_score}%
+                                                            </Badge>
+                                                          </TableCell>
+                                                          <TableCell className="text-xs max-w-xs">
+                                                            <div className="truncate" title={detail.reasoning}>
+                                                              {detail.reasoning.length > 50
+                                                                ? detail.reasoning.substring(0, 50) + '...'
+                                                                : detail.reasoning}
+                                                            </div>
+                                                          </TableCell>
+                                                        </TableRow>
+                                                      ))}
+                                                    </TableBody>
+                                                  </Table>
+                                                </div>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        ) : mappingResults[selectedContent.id] && mappingResults[selectedContent.id].length === 0 ? (
+                                          <div className="bg-gray-50 p-4 rounded-lg text-center">
+                                            <Target className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                                            <p className="text-sm text-gray-600">No mapping results found for this content.</p>
+                                          </div>
+                                        ) : null}
                                       </div>
                                     )}
                                     
